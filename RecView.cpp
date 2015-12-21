@@ -44,6 +44,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
 	//}}AFX_DATA_MAP
 }
 
@@ -110,3 +113,16 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()){
+		// draw current record
+		rs.MoveNext();
+	}
+	CRecordView::OnPrint(pDC, pInfo);
+}
