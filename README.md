@@ -26,14 +26,7 @@ Uputstva:
   *	View klasa (RecView) je izvedena iz CRecordView 
 *	na formu stavite 3 static-a,  2 edit-a i 1 checkbox
 *	------------------------------------------------------------------------------------
-*	u RecView napravite DDX kontrola na članove klase izvedene iz CRecordSet
-
-  ```
-  DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
-  DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
-  DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
-  ```
-
+*	u RecView napravite DDX kontrola na članove klase izvedene iz CRecordSet - koristeći `DDX_FieldText` (za edit kontrole) i `DDX_FieldCheck` (za checkbox)
 *	dodajte OnPrint() u RecView
 *	u OnPrint() prođite kroz cijeli record set
 
