@@ -23,18 +23,22 @@ Uputstva:
 *	na formu stavite 3 static-a,  2 edit-a i 1 checkbox
 *	u RecView napravite DDX kontrola na članove klase izvedene iz CRecordSet
 
+  ```
   DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
   DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
   DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+  ```
 
 *	dodajte OnPrint() u RecView
 *	u OnPrint() prođite kroz cijeli record set
 
+  ```
   RecSet rs;
   rs.Open();
   while(!rs.IsEOF()){
     // draw current record
     rs.MoveNext();	
   }
+  ```
 *	širinu i visinu stranice papira možete saznati pomoću `GetDeviceCaps()` (HORZRES, VERTRES)
 *	visinu reda teksta možete saznati pomoću `GetTextExtent()`
