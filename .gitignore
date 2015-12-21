@@ -1,0 +1,11 @@
+﻿/Debug
+/Release
+*.suo
+*.db
+*.json
+*.opendb
+*.user
+*.sqlite
+*.ipch
+*.db-shm
+*.db-wal
