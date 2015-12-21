@@ -2,6 +2,7 @@
 
 Koristeći MFC napravite aplikaciju koja pristupa tablici User u Access bazi podataka preko ODBC-a.
 
+![table](/db.jpg?raw=true)
 ![frame](/screenshot.jpg?raw=true)
 
 Aplikacija štampa i jednostavni izvještaj za tablicu i mora podržavati preview ispisa. 
