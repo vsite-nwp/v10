@@ -14,6 +14,10 @@ Uputstva:
 
 *	napravite Access bazu sa jednom tablicom i tri polja
 *	u Control Panel-u dodajte ODBC data source (System DSN) koji pokazuje na tu bazu
+  *	koristite Data Sources (ODBC) tool iz Control Panel \ Administrative Tools
+  *	na 64-bitnim Windowsima koristite 32-bitnu verziju (c:\Windows\SysWOW64\odbcad32.exe)
+  *	DSN *name* koji odgovara projektu je **v10**
+*	------------------------------------------------------------------------------------
 *	napravite pomoću AppWizard-a MFC aplikaciju:
   * Application type = "Single document"
   *	"Document/View architecture support" je uključen
@@ -22,6 +26,7 @@ Uputstva:
   *	"Printing and print preview" je uključen
   *	View klasa (RecView) je izvedena iz CRecordView 
 *	na formu stavite 3 static-a,  2 edit-a i 1 checkbox
+*	------------------------------------------------------------------------------------
 *	u RecView napravite DDX kontrola na članove klase izvedene iz CRecordSet
 
   ```
