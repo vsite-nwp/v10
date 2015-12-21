@@ -31,7 +31,7 @@ Uputstva:
 *	u OnPrint() prođite kroz cijeli record set
 
   ```
-  RecSet rs;
+  Set rs;
   rs.Open();
   while(!rs.IsEOF()){
     // draw current record
