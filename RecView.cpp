@@ -118,27 +118,27 @@ CRecordset* RecView::OnGetRecordset()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	RECT rc;
-
-	rc.bottom = pDC->GetDeviceCaps(VERTRES);
-	rc.right = pDC->GetDeviceCaps(HORZRES);
-
-	CString a;
-	a.Format(_T("id \t \t name \t \t manager"));
-	pDC->DrawText(a, pInfo->m_rectDraw, DT_CENTER);
-	//pDC->DrawText(a, &rc, DT_CENTER);
-
-	a.Format(_T("_______________________________ "));
-	pDC->DrawText(a, pInfo->m_rectDraw,DT_CENTER);
-	//pDC->DrawText(a, &rc, DT_CENTER);
+	CSize size = pDC->GetTextExtent(m_pSet->m_name);
+	int y = pDC->GetDeviceCaps(VERTRES);
+	int x = pDC->GetDeviceCaps(HORZRES);
 	
+	int hight = 0;
+
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()){
-				
-		a.Format(_T("%d \t \t %s \t \t %s \n"), rs.m_id, rs.m_name, rs.m_manager ? "x" : "" );
-		pDC->DrawText(a, pInfo->m_rectDraw, DT_CENTER);
-		//pDC->DrawText(a, &rc, DT_CENTER);
+		CString s;
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(x*0.2, hight, s);
+		
+
+		s.Format(_T("%s"), rs.m_name);
+		pDC->TextOut(x*0.3, hight, s);
+		
+
+		s.Format(_T("%s"), rs.m_manager ? "x" : "");
+		pDC->TextOut(x*0.6, hight, s);
+		hight += size.cy;
 
 		rs.MoveNext();
 	}
