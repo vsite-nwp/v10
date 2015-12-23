@@ -118,34 +118,35 @@ CRecordset* RecView::OnGetRecordset()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	CSize size = pDC->GetTextExtent(m_pSet->m_name);
+	CSize size = pDC->GetTextExtent(_T("VSITE"));
 	int y = pDC->GetDeviceCaps(VERTRES);
 	int x = pDC->GetDeviceCaps(HORZRES);
 	
-	int hight = 0;
+	int height = 0;
 
-	pDC->TextOut(x*0.2, hight, _T("ID"));
-	pDC->TextOut(x*0.3, hight, _T("NAME"));
-	pDC->TextOut(x*0.6, hight, _T("MANAGER"));
-	hight += size.cy;
+	pDC->TextOut(x*0.2, height, _T("ID"));
+	pDC->TextOut(x*0.3, height, _T("NAME"));
+	pDC->TextOut(x*0.6, height, _T("MANAGER"));
+	height += size.cy;
 
-	pDC->TextOut(x*0.2, hight, _T("____________________________________________________"),50);
+	pDC->MoveTo(x*0.2, height);
+	pDC->LineTo(x*0.7, height);
 
-	hight += size.cy;
+	height += size.cy;
 
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()){
 		CString s;
 		s.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(x*0.2, hight, s);		
+		pDC->TextOut(x*0.2, height, s);
 
-		s.Format(_T("%s"), rs.m_name);
-		pDC->TextOut(x*0.3, hight, s);
+		pDC->TextOut(x*0.3, height, rs.m_name);
 
-		s.Format(_T("%s"), rs.m_manager ? "x" : "");
-		pDC->TextOut(x*0.6, hight, s);
-		hight += size.cy;
+		if (rs.m_manager)
+			pDC->TextOut(x*0.6, height, "X");
+
+		height += size.cy;
 
 		rs.MoveNext();
 	}
