@@ -124,17 +124,24 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	
 	int hight = 0;
 
+	pDC->TextOut(x*0.2, hight, _T("ID"));
+	pDC->TextOut(x*0.3, hight, _T("NAME"));
+	pDC->TextOut(x*0.6, hight, _T("MANAGER"));
+	hight += size.cy;
+
+	pDC->TextOut(x*0.2, hight, _T("____________________________________________________"),50);
+
+	hight += size.cy;
+
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()){
 		CString s;
 		s.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(x*0.2, hight, s);
-		
+		pDC->TextOut(x*0.2, hight, s);		
 
 		s.Format(_T("%s"), rs.m_name);
 		pDC->TextOut(x*0.3, hight, s);
-		
 
 		s.Format(_T("%s"), rs.m_manager ? "x" : "");
 		pDC->TextOut(x*0.6, hight, s);
