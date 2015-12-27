@@ -43,6 +43,10 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
@@ -110,3 +114,62 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	
+	int hor = pDC->GetDeviceCaps(HORZRES);
+	int ver = pDC->GetDeviceCaps(VERTRES);
+	CSize vel = pDC->GetTextExtent("ID");
+
+	int pomak = vel.cy;
+	
+	int pozId = int(hor*0.1);
+	int pozIme = int(hor*0.2);
+	int pozMan = int(hor*0.5);
+	
+	
+	pDC->TextOut(pozId, pomak, _T("id"));
+	pDC->TextOut(pozIme, pomak, _T("name"));
+	pDC->TextOut(pozMan, pomak, _T("manager"));
+	pomak += 2*vel.cy;
+
+	pDC->MoveTo(pozId, pomak);
+	pDC->LineTo(pozMan*1.5, pomak);
+	pomak += vel.cy;
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString s;
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(pozId,pomak, s);
+
+		pDC->TextOut(pozIme,pomak, rs.m_name);
+
+		if(rs.m_manager)
+		pDC->TextOutA(pozMan,pomak, "x");
+
+		pomak += vel.cy;
+
+		rs.MoveNext();
+	}
+}
+
+
+void RecView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	CRecordView::OnPrepareDC(pDC, pInfo);
+}
+
+
+void RecView::OnDraw(CDC* pDC)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	
+}
