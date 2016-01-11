@@ -122,20 +122,20 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	int vertical = pDC->GetDeviceCaps(VERTRES);
 	CSize visina = pDC->GetTextExtent(_T("NWP"));
 	int height = visina.cy;
-	pDC->TextOut(horizontal*0.2, height, _T("ID"));
-	pDC->TextOut(horizontal*0.4, height, _T("NAME"));
-	pDC->TextOut(horizontal*0.6, height, _T("MANAGER"));
+	pDC->TextOut(horizontal*0.1, height, _T("ID"));
+	pDC->TextOut(horizontal*0.2, height, _T("Name"));
+	pDC->TextOut(horizontal*0.6, height, _T("Manager"));
 	height *= 2;
-	pDC->MoveTo(horizontal*0.5, height);
-	pDC->LineTo(horizontal*0.9, height);
+	pDC->MoveTo(horizontal*0.1, height);
+	pDC->LineTo(horizontal*0.7, height);
 	height += visina.cy;
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()){
 		CString s;
 		s.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(horizontal*0.2, height, s);
-		pDC->TextOut(horizontal*0.4, height, rs.m_name);
+		pDC->TextOut(horizontal*0.1, height, s);
+		pDC->TextOut(horizontal*0.2, height, rs.m_name);
 		if (rs.m_manager)
 			pDC->TextOut(horizontal*0.6, height, "•");
 			height += visina.cy;
