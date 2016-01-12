@@ -48,7 +48,7 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
 	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
-	DDX_FieldCheck(pDX, IDC_EDIT1, m_pSet->m_manager, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
