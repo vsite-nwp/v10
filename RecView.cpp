@@ -33,6 +33,7 @@ END_MESSAGE_MAP()
 
 RecView::RecView()
 	: CRecordView(RecView::IDD)
+	
 {
 }
 
@@ -45,6 +46,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_EDIT1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +114,45 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	
+	int x =pDC->GetDeviceCaps(HORZRES);
+	int y = pDC->GetDeviceCaps(VERTRES);
+	CSize size = pDC->GetTextExtent(_T("NPW_10"));
+	int move =size.cy;
+	
+	
+	pDC->TextOut(x*0.1, move, _T("id"));
+	pDC->TextOut(x*0.3, move, _T("name"));
+	pDC->TextOut(x*0.5, move, _T("manager"));
+	move +=size.cy;
+
+
+	pDC->MoveTo(x*0.1, move);
+	pDC->LineTo(x*0.7, move);
+	move += size.cy;
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) 
+	{
+		CString s;
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(x*0.1, move, s);
+		pDC->TextOut(x*0.3, move , rs.m_name);
+		if (rs.m_manager != NULL)
+			pDC->TextOut(x*0.5, move , _T("x"));
+
+		move += size.cy;
+
+		
+		rs.MoveNext();
+	
+	}
+
+
+	//CRecordView::OnPrint(pDC, pInfo);
+}
