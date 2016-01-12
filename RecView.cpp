@@ -44,6 +44,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
 	//}}AFX_DATA_MAP
 }
 
@@ -110,3 +113,33 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+
+	int horizontal = pDC->GetDeviceCaps(HORZRES);
+	int vertical = pDC->GetDeviceCaps(VERTRES);
+	CSize visina = pDC->GetTextExtent(_T("NWP"));
+	int height = visina.cy;
+	pDC->TextOut(horizontal*0.1, height, _T("ID"));
+	pDC->TextOut(horizontal*0.2, height, _T("Name"));
+	pDC->TextOut(horizontal*0.6, height, _T("Manager"));
+	height *= 2;
+	pDC->MoveTo(horizontal*0.1, height);
+	pDC->LineTo(horizontal*0.7, height);
+	height += visina.cy;
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()){
+		CString s;
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(horizontal*0.1, height, s);
+		pDC->TextOut(horizontal*0.2, height, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut(horizontal*0.6, height, "•");
+			height += visina.cy;
+			rs.MoveNext();
+	}
+	CRecordView::OnPrint(pDC, pInfo);
+}
