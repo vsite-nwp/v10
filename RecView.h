@@ -59,6 +59,12 @@ protected:
 	//{{AFX_MSG(RecView)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
+
+	
+public:
+	virtual void OnDraw(CDC* /*pDC*/);
+	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
 };
 
 #ifndef _DEBUG  // debug version in RecView.cpp
