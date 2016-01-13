@@ -44,6 +44,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
 	//}}AFX_DATA_MAP
 }
 
@@ -92,6 +95,39 @@ void RecView::Dump(CDumpContext& dc) const
 	CRecordView::Dump(dc);
 }
 
+void RecView::OnPrint(CDC * pDc, CPrintInfo * pInfo)
+{
+	int vertical = pDc->GetDeviceCaps(VERTRES);
+	int horizontal = pDc->GetDeviceCaps(HORZRES);
+	CSize text = pDc->GetTextExtent("ABC");
+	int p = text.cy;
+	
+
+	int id = horizontal*0.2;
+	int name = horizontal*0.4;
+	int manager = horizontal*0.6;
+	
+	pDc->TextOut(id, p, "ID");
+	pDc->TextOut(name, p, "Name");
+	pDc->TextOut(manager, p, "Manager");
+	p = p + text.cy;
+	pDc->MoveTo(id, p);
+	pDc->LineTo(manager*1.3, p);
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString str;
+		str.Format(_T("%d"), rs.m_id);
+		pDc->TextOut(id, p, str);
+		pDc->TextOut(name, p, rs.m_name);
+		if (rs.m_manager) {
+			pDc->TextOut(manager, p, "x");
+		}
+		p = p + text.cy;
+		rs.MoveNext();
+	}
+}
+
 Doc* RecView::GetDocument() // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(Doc)));
@@ -110,3 +146,17 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnDraw(CDC* /*pDC*/)
+{
+	// TODO: Add your specialized code here and/or call the base class
+}
+
+
+void RecView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	CRecordView::OnPrepareDC(pDC, pInfo);
+}
