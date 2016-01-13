@@ -43,9 +43,13 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
+
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -72,6 +76,8 @@ BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 
 void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
+
+
 }
 
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
@@ -110,3 +116,40 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	{
+		int offset = 0;
+		int hor = pDC->GetDeviceCaps(HORZRES);
+		int ver = pDC->GetDeviceCaps(VERTRES);	
+
+		int pomakID = int(hor*0.1);
+		int pomakIme = int(hor*0.3);
+		int pomakManager = int(hor*0.6);
+		CSize vel = pDC->GetTextExtent("ID");
+
+		pDC->TextOut(pomakID, offset, _T("id"));
+		pDC->TextOut(pomakIme, offset, _T("name"));
+		pDC->TextOut(pomakManager, offset, _T("manager"));
+
+		offset += 2 * vel.cy;
+		pDC->MoveTo(pomakID, offset);
+		pDC->LineTo(pomakManager*1.5, offset);
+		offset += vel.cy;
+
+		Set rs;
+		rs.Open();
+		while (!rs.IsEOF()) {
+			CString s;
+			s.Format(_T("%d"), rs.m_id);
+			pDC->TextOut(pomakID, offset, s);
+			pDC->TextOut(pomakIme, offset, rs.m_name);
+			if (rs.m_manager)
+				pDC->TextOutA(pomakManager, offset, "x");
+			offset += vel.cy;
+			rs.MoveNext();
+		}
+	}
+}
