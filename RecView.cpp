@@ -43,6 +43,13 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	
+	
+	
+	
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
@@ -63,6 +70,36 @@ void RecView::OnInitialUpdate()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView printing
+void RecView::OnPrint(CDC* pDC, CPrintInfo* PInfo) {
+	int horzes = pDC->GetDeviceCaps(HORZRES);
+	CSize csize= pDC->GetTextExtent("NWP");
+	int step=csize.cy;
+	int posId = int(horzes*0.1);
+	int posName = int(horzes*0.2);
+	int posMan = int(horzes*0.6);
+	pDC->TextOut(posId, step, _T("Id"));
+	pDC->TextOut(posName, step, _T("Name"));
+	pDC->TextOut(posMan, step, _T("Manager"));
+	step= 2 * csize.cy;
+	pDC->MoveTo(posId, step);
+	pDC->LineTo(posMan+500, step);
+	step+=csize.cy;
+	
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString s;						   
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(posId, step, s);
+		pDC->TextOut(posName, step, rs.m_name);
+		if (rs.m_manager) {
+			pDC->TextOut(posMan, step, "X");
+		}
+		step += csize.cy;
+			rs.MoveNext();
+		}
+	rs.Close();
+}
 
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 {
