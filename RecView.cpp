@@ -113,3 +113,42 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int vertical_res   = pDC->GetDeviceCaps(VERTRES);
+	int horizontal_res = pDC->GetDeviceCaps(HORZRES);
+	CSize text_size    = pDC->GetTextExtent("A");
+	int y_movement     = text_size.cy;
+
+	int id_space      = horizontal_res *0.1;
+	int name_space    = horizontal_res *0.4;
+	int manager_space = horizontal_res *0.7;
+
+	pDC->TextOut(id_space,      y_movement, _T("ID"));
+	pDC->TextOut(name_space,    y_movement, _T("Name"));
+	pDC->TextOut(manager_space, y_movement, _T("Manager"));
+	y_movement += text_size.cy;
+
+	pDC->MoveTo(id_space, y_movement);
+	pDC->LineTo(manager_space*1.1, y_movement);
+	y_movement += text_size.cy;
+
+	Set rs;
+	rs.Open();
+
+	while (!rs.IsEOF()) {
+		CString str;
+		str.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(name_space, y_movement, rs.m_name);
+		pDC->TextOut(id_space,   y_movement, str);
+		if (rs.m_manager) {
+			pDC->TextOut(manager_space, y_movement, "X");
+		}
+		y_movement += text_size.cy;
+		rs.MoveNext();
+	}
+
+	CRecordView::OnPrint(pDC, pInfo);
+}
