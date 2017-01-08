@@ -43,9 +43,11 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(RecView)
-	//}}AFX_DATA_MAP
-}
+		DDX_FieldText(pDX,IDC_EDIT1 , m_pSet->m_id, m_pSet);
+		DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+		DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	}
+
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -66,12 +68,12 @@ void RecView::OnInitialUpdate()
 
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 {
-	// default preparation
 	return DoPreparePrinting(pInfo);
 }
 
 void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
+
 }
 
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
@@ -92,6 +94,39 @@ void RecView::Dump(CDumpContext& dc) const
 	CRecordView::Dump(dc);
 }
 
+void RecView::OnPrint(CDC * pDC, CPrintInfo * pInfo)
+{
+	int vertical = pDC->GetDeviceCaps(VERTRES);
+	int horizontal = pDC->GetDeviceCaps(HORZRES);
+	CSize text_high = pDC->GetTextExtent("ABC");
+	int y_pos = text_high.cy;
+	int pomakID = int(horizontal*0.1);
+	int pomakIme = int(horizontal*0.3);
+	int pomakManager = int(horizontal*0.6);
+
+	pDC->TextOut(pomakID, y_pos, _T("id"));
+	pDC->TextOut(pomakIme, y_pos, _T("name"));
+	pDC->TextOut(pomakManager, y_pos, _T("manager"));
+
+	y_pos += 2 * text_high.cy;
+	pDC->MoveTo(pomakID, y_pos);
+	pDC->LineTo(pomakManager*1.5, y_pos);
+	y_pos += text_high.cy;
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString s;
+		s.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(pomakID, y_pos, s);
+		pDC->TextOut(pomakIme, y_pos, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOutA(pomakManager, y_pos, "x");
+		y_pos += text_high.cy;
+		rs.MoveNext();
+	}
+}
+
 Doc* RecView::GetDocument() // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(Doc)));
@@ -109,4 +144,13 @@ CRecordset* RecView::OnGetRecordset()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
+
+
+
+
+
+
+
+
+
 
