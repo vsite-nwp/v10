@@ -97,6 +97,37 @@ void RecView::Dump(CDumpContext& dc) const
 
 void RecView::onPrint(CDC* pDC, CPrintInfo* pInfo)
 {
+	int h_res = pDC->GetDeviceCaps(HORZRES);
+	int v_res = pDC->GetDeviceCaps(VERTRES);
+	
+	CSize s_size = pDC->GetTextExtent("T");
+	int y_pos = s_size.cy;
+	
+	pDC->TextOut(h_res / 10, y_pos, _T("id"));
+	pDC->TextOut(3 * h_res / 10, y_pos, _T("Name"));
+	pDC->TextOut(5 * h_res / 10, y_pos, _T("Manager"));
+	
+	y_pos = 2.5*y_pos;
+	
+	pDC->MoveTo(h_res / 10, y_pos);
+	pDC->LineTo(7 * h_res / 10, y_pos);
+	
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString str;
+		str.Format(_T("%d"), rs.m_id);
+		y_pos += s_size.cy;
+		
+		pDC->TextOut(h_res / 10, y_pos, str);
+		pDC->TextOut(3 * h_res / 10, y_pos, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut(5 * h_res / 10, y_pos, _T("X"));
+		
+		rs.MoveNext();
+		
+	}
+	CRecordView::OnPrint(pDC, pInfo);
 }
 
 Doc* RecView::GetDocument() // non-debug version is inline
