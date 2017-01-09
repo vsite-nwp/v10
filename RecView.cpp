@@ -95,6 +95,10 @@ void RecView::Dump(CDumpContext& dc) const
 	CRecordView::Dump(dc);
 }
 
+void RecView::onPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+}
+
 Doc* RecView::GetDocument() // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(Doc)));
