@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/v10/v14
+/Debug/v10.tlog/CL.command.1.tlog
+/Debug
+*.aps
