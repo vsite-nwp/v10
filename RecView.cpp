@@ -84,12 +84,16 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 	Set rs;
 	rs.Open();
-	
+	long x = pDC->GetDeviceCaps(HORZRES);
+	long y = pDC->GetDeviceCaps(VERTRES);
+	CSize z = pDC->GetTextExtent(m_pSet->m_name);
+	int zcy = z.cy;
 	while (!rs.IsEOF()) {
-		pDC->TextOut(0, 0, m_pSet->m_name);
+		pDC->TextOut(x/10, zcy, rs.m_name);
+		zcy += z.cy;
 		rs.MoveNext();
 	}
-	rs.Close();
+	
 }
 /////////////////////////////////////////////////////////////////////////////
 // RecView diagnostics
