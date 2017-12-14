@@ -45,6 +45,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +113,41 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	Set rs;
+	rs.Open();
+
+	RECT rect = pInfo->m_rectDraw;
+	POINT a;
+	a.y = rect.bottom / 10;
+	a.x = 0;
+	
+	pDC->MoveTo(a);
+	a.x = rect.right;
+	pDC->LineTo(a);
+	rect.top = rect.bottom / 15;
+	CFont font; font.CreateFont(-20*pDC->GetDeviceCaps(LOGPIXELSY)/72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TEXT("Times New Roman"));
+	pDC->SelectObject(&font);
+	CString str = TEXT("ID");	
+	pDC->DrawText(str, &rect, DT_LEFT);
+	str = "Name";
+	pDC->DrawText(str, &rect, DT_CENTER);
+	str = "Manager";
+	pDC->DrawText(str, &rect, DT_RIGHT);
+	int i = 20 * pDC->GetDeviceCaps(LOGPIXELSY) / 72;
+	rect.top += i;
+	while ( !rs.IsEOF() ) {
+		rect.top += i;
+		str.Format(_T("%d"), rs.m_id);
+		pDC->DrawText(str, &rect, DT_LEFT);
+		pDC->DrawText(rs.m_name, &rect, DT_CENTER);
+		if(rs.m_manager)
+			pDC->DrawText("x", &rect, DT_RIGHT);
+		rs.MoveNext();
+	}
+
+	CRecordView::OnPrint(pDC, pInfo);
+}
