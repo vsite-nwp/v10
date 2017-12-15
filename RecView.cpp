@@ -88,11 +88,19 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 	long y = pDC->GetDeviceCaps(VERTRES);
 	CSize z = pDC->GetTextExtent(m_pSet->m_name);
 	int zcy = z.cy;
-	while (!rs.IsEOF()) {
-		pDC->TextOut(x/10, zcy, rs.m_name);
+	CODBCFieldInfo info;
+	int i = 0;
+	while (rs.GetODBCFieldCount() > i) {
+		rs.GetODBCFieldInfo(i, info);
+		pDC->TextOut(x / 10, zcy, info.m_strName);
+		zcy += z.cy;
+		i++;
+		}
+	/*while (!rs.IsEOF()) {
+		pDC->TextOut(x/10, zcy, info.m_strName);
 		zcy += z.cy;
 		rs.MoveNext();
-	}
+	}*/
 	
 }
 /////////////////////////////////////////////////////////////////////////////
