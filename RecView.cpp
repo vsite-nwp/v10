@@ -113,3 +113,36 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	Set rs;
+	rs.Open();
+	POINT margins{100, 50};
+	long cellX = pDC->GetDeviceCaps(HORZRES) / rs.GetODBCFieldCount();
+	CSize strSize = pDC->GetTextExtent(std::to_string(rs.m_id).c_str());
+	RECT cell{ margins.x, margins.y,cellX, strSize.cy*2};
+	//header drawing
+	pDC->DrawText(_T("ID"), &cell, DT_LEFT|DT_BOTTOM);
+	cell = {cellX, margins.y, cellX*2, strSize.cy*2};
+	pDC->DrawText(_T("Name"), &cell, DT_LEFT | DT_BOTTOM);
+	cell = { cellX*2, margins.y, cellX*3, strSize.cy * 2 };
+	pDC->DrawText(_T("Manager"), &cell, DT_LEFT | DT_BOTTOM);
+	pDC->MoveTo(margins.x, strSize.cy*2);
+	pDC->LineTo(pDC->GetDeviceCaps(HORZRES) - margins.x, strSize.cy*2);
+
+	for (int movY = 2; !rs.IsEOF();movY+=2) {
+		cell = { margins.x, strSize.cy * movY+10, cellX, strSize.cy * (movY+2)+10 };
+		pDC->DrawText(std::to_string(rs.m_id).c_str(), &cell, DT_LEFT | DT_BOTTOM);
+		cell = { cellX, strSize.cy * movY+10, cellX * 2, strSize.cy * (movY+2)+10};
+		pDC->DrawText(rs.m_name, &cell, DT_LEFT | DT_BOTTOM);
+		if (rs.m_manager) {
+			cell = { cellX * 2, strSize.cy * movY+10, cellX * 3, strSize.cy * (movY+2)+10 };
+			pDC->DrawText(_T("x"), &cell, DT_LEFT | DT_BOTTOM);
+		}
+
+		rs.MoveNext();
+	}
+	CRecordView::OnPrint(pDC, pInfo);
+}
