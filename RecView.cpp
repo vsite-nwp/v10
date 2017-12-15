@@ -122,6 +122,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 
 	RECT rect = pInfo->m_rectDraw;
 	POINT a;
+	int numOfColumns = 3;
 	a.y = rect.bottom / 10;
 	a.x = 0;
 	
@@ -133,19 +134,24 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	pDC->SelectObject(&font);
 	CString str = TEXT("ID");	
 	pDC->DrawText(str, &rect, DT_LEFT);
+	rect.left = pInfo->m_rectDraw.right / numOfColumns;
 	str = "Name";
-	pDC->DrawText(str, &rect, DT_CENTER);
+	pDC->DrawText(str, &rect, DT_LEFT);
+	rect.left = 2 * (pInfo->m_rectDraw.right / numOfColumns);
 	str = "Manager";
-	pDC->DrawText(str, &rect, DT_RIGHT);
-	int i = 20 * pDC->GetDeviceCaps(LOGPIXELSY) / 72;
-	rect.top += i;
+	pDC->DrawText(str, &rect, DT_LEFT);
+	int textSize = pDC->GetTextExtent(str).cy;
+	rect.top += textSize;
 	while ( !rs.IsEOF() ) {
-		rect.top += i;
+		rect.left = pInfo->m_rectDraw.left;
+		rect.top += textSize;
 		str.Format(_T("%d"), rs.m_id);
 		pDC->DrawText(str, &rect, DT_LEFT);
-		pDC->DrawText(rs.m_name, &rect, DT_CENTER);
+		rect.left = pInfo->m_rectDraw.right / numOfColumns;
+		pDC->DrawText(rs.m_name, &rect, DT_LEFT);
+		rect.left = 2 * (pInfo->m_rectDraw.right / numOfColumns);
 		if(rs.m_manager)
-			pDC->DrawText("x", &rect, DT_RIGHT);
+			pDC->DrawText("x", &rect, DT_LEFT);
 		rs.MoveNext();
 	}
 
