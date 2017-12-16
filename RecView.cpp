@@ -82,25 +82,40 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 }
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
+	
 	Set rs;
 	rs.Open();
+	
+	int i = 0;
+	int j = 1;
+	short k = rs.GetODBCFieldCount();
 	long x = pDC->GetDeviceCaps(HORZRES);
 	long y = pDC->GetDeviceCaps(VERTRES);
 	CSize z = pDC->GetTextExtent(m_pSet->m_name);
 	int zcy = z.cy;
 	CODBCFieldInfo info;
-	int i = 0;
-	while (rs.GetODBCFieldCount() > i) {
+	CString id;
+	
+	while (k > i) {
 		rs.GetODBCFieldInfo(i, info);
-		pDC->TextOut(x / 10, zcy, info.m_strName);
-		zcy += z.cy;
-		i++;
-		}
-	/*while (!rs.IsEOF()) {
-		pDC->TextOut(x/10, zcy, info.m_strName);
-		zcy += z.cy;
+		pDC->TextOut(j * x / 10, y / 15 - zcy * 2, info.m_strName);
+		i++; j += 2; 
+	}
+	
+	pDC->MoveTo(x / 10, y / 15);
+	pDC->LineTo(8 * x / 10, y / 15);
+	
+	j = k - 1;
+	
+	while (!rs.IsEOF()) {
+		id.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(x / 10, y / 15 + zcy, id); 
+		pDC->TextOut((x / 10)*k, y / 15 + zcy, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut((x / 10)*(k+j), y / 15 + zcy, "x"); 
+		zcy += z.cy; 
 		rs.MoveNext();
-	}*/
+	}
 	
 }
 /////////////////////////////////////////////////////////////////////////////
