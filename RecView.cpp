@@ -120,45 +120,28 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	Set rs;
 	rs.Open();
 	CString tekst = "A";
-	CRect rec = pInfo->m_rectDraw;
-	int right = rec.right / 3;
-	rec.right = right;
+	int x = pDC->GetDeviceCaps(HORZRES) / 5;
 	CSize velicina = pDC->GetTextExtent(tekst);
-	rec.top += velicina.cy;
-	rec.bottom = rec.top + velicina.cy;
+	int y = velicina.cy;
 
-	pDC->DrawText(_T("id"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	rec.left = rec.right;
-	rec.right += right;
-	pDC->DrawText(_T("name"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	rec.left = rec.right;
-	rec.right += right;
-	pDC->DrawText(_T("manager"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	pDC->SetTextAlign(TA_LEFT);
+	pDC->TextOut(x, y, _T("id"));
+	pDC->TextOut(x * 2, y, _T("name"));
+	pDC->TextOut(x * 3, y, _T("manager"));
 
+	y += velicina.cy;
 
-	rec.right -= rec.left;
-	rec.left = rec.right - right;
-	rec.top = rec.bottom;
-	rec.bottom = rec.top + velicina.cy;
-
-	pDC->MoveTo(rec.left, rec.top + velicina.cy / 2);
-	pDC->LineTo(rec.right * 3, rec.top + velicina.cy / 2);
+	pDC->MoveTo(x, y);
+	pDC->LineTo(x * 4, y);
 
 
 	while (!rs.IsEOF()) {
-		rec.top = rec.bottom;
-		rec.bottom = rec.top + velicina.cy;
+		y += velicina.cy;
 		tekst.Format(_T("%d"), rs.m_id);
-		pDC->DrawText(tekst, rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		rec.left = rec.right;
-		rec.right += right;
-		pDC->DrawText(rs.m_name, rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		rec.left = rec.right;
-		rec.right += right;
+		pDC->TextOut(x, y, tekst);
+		pDC->TextOut(x * 2, y, rs.m_name);
 		if (rs.m_manager)
-			pDC->DrawText("x", rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		rec.right -= rec.left;
-		rec.left = rec.right - right;
+			pDC->TextOut(x * 3, y, _T("x"));
 
 		rs.MoveNext();
 	}
