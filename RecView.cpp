@@ -45,6 +45,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +113,53 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	Set rs;
+	rs.Open();
+	CString tekst = "A";
+	CRect rec = pInfo->m_rectDraw;
+	int right = rec.right / 3;
+	rec.right = right;
+	CSize velicina = pDC->GetTextExtent(tekst);
+	rec.top += velicina.cy;
+	rec.bottom = rec.top + velicina.cy;
+
+	pDC->DrawText(_T("id"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	rec.left = rec.right;
+	rec.right += right;
+	pDC->DrawText(_T("name"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	rec.left = rec.right;
+	rec.right += right;
+	pDC->DrawText(_T("manager"), rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+
+	rec.right -= rec.left;
+	rec.left = rec.right - right;
+	rec.top = rec.bottom;
+	rec.bottom = rec.top + velicina.cy;
+
+	pDC->MoveTo(rec.left, rec.top + velicina.cy / 2);
+	pDC->LineTo(rec.right * 3, rec.top + velicina.cy / 2);
+
+
+	while (!rs.IsEOF()) {
+		rec.top = rec.bottom;
+		rec.bottom = rec.top + velicina.cy;
+		tekst.Format(_T("%d"), rs.m_id);
+		pDC->DrawText(tekst, rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		rec.left = rec.right;
+		rec.right += right;
+		pDC->DrawText(rs.m_name, rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		rec.left = rec.right;
+		rec.right += right;
+		if (rs.m_manager)
+			pDC->DrawText("x", rec, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		rec.right -= rec.left;
+		rec.left = rec.right - right;
+
+		rs.MoveNext();
+	}
+}
