@@ -119,9 +119,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	Set rs;
 	rs.Open();
-	CString tekst = "A";
 	int x = pInfo->m_rectDraw.right / 5;
-	CSize velicina = pDC->GetTextExtent(tekst);
+	CSize velicina = pDC->GetTextExtent("A");
 	int y = pInfo->m_rectDraw.top + velicina.cy;
 
 	pDC->SetTextAlign(TA_LEFT);
@@ -135,6 +134,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 
 	while (!rs.IsEOF()) {
 		y += velicina.cy;
+		CString tekst;
 		tekst.Format(_T("%d"), rs.m_id);
 		pDC->TextOut(x, y, tekst);
 		pDC->TextOut(x * 2, y, rs.m_name);
