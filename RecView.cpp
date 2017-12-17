@@ -45,6 +45,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +113,32 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	Set rs;
+	rs.Open();
+	RECT drawArea = pInfo->m_rectDraw;
+	drawArea.bottom = pDC->GetTextExtent(std::to_string(rs.m_id).c_str()).cy*2;
+	drawArea.right /= rs.GetODBCFieldCount();
+	pDC->SetTextAlign(TA_BOTTOM);
+	pDC->TextOut(drawArea.left, drawArea.bottom, _T("ID"));
+	pDC->TextOut(drawArea.right, drawArea.bottom, _T("Name"));
+	pDC->TextOut(drawArea.right * 2, drawArea.bottom, _T("Manager"));
+	pDC->MoveTo(drawArea.left, drawArea.bottom);
+	pDC->LineTo(pInfo->m_rectDraw.right, drawArea.bottom);
+	drawArea.bottom += drawArea.bottom;
+
+	while (!rs.IsEOF()) {
+		pDC->TextOut(drawArea.left, drawArea.bottom, std::to_string(rs.m_id).c_str());
+		pDC->TextOut(drawArea.right, drawArea.bottom, rs.m_name);
+		if (rs.m_manager) 
+			pDC->TextOut(drawArea.right * 2, drawArea.bottom, _T("x"));
+
+		drawArea.bottom += pDC->GetTextExtent(rs.m_name).cy*2;
+
+		rs.MoveNext();
+	}
+
+	CRecordView::OnPrint(pDC, pInfo);
+}
