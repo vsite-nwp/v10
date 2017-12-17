@@ -30,12 +30,12 @@ Set::Set(CDatabase* pdb)
 
 CString Set::GetDefaultConnect()
 {
-	return _T("ODBC;DSN=V10");
+	return _T("ODBC;DSN=baza");
 }
 
 CString Set::GetDefaultSQL()
 {
-	return _T("[User]");
+	return _T("[baza]");
 }
 
 void Set::DoFieldExchange(CFieldExchange* pFX)
