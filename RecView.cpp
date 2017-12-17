@@ -114,35 +114,31 @@ CRecordset* RecView::OnGetRecordset()
 // RecView message handlers
 
 
-
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	Set rs;
 	rs.Open();
-	POINT margins{400, 300};
-	long cellX = pDC->GetDeviceCaps(HORZRES) / rs.GetODBCFieldCount();
-	CSize strSize = pDC->GetTextExtent(std::to_string(rs.m_id).c_str());
-	RECT cell{ margins.x, margins.y,cellX, strSize.cy+margins.y};
-	//header drawing
-	pDC->DrawText(_T("ID"), &cell, DT_LEFT|DT_BOTTOM);
-	cell = {cellX, margins.y, cellX*2, strSize.cy+margins.y};
-	pDC->DrawText(_T("Name"), &cell, DT_LEFT | DT_BOTTOM);
-	cell = { cellX*2, margins.y, cellX*3, strSize.cy+margins.y };
-	pDC->DrawText(_T("Manager"), &cell, DT_LEFT | DT_BOTTOM);
-	pDC->MoveTo(margins.x, strSize.cy+margins.y);
-	pDC->LineTo(pDC->GetDeviceCaps(HORZRES) - margins.x, strSize.cy+margins.y);
+	RECT drawArea = pInfo->m_rectDraw;
+	drawArea.bottom = pDC->GetTextExtent(std::to_string(rs.m_id).c_str()).cy*2;
+	drawArea.right /= rs.GetODBCFieldCount();
+	pDC->SetTextAlign(TA_BOTTOM);
+	pDC->TextOut(drawArea.left, drawArea.bottom, _T("ID"));
+	pDC->TextOut(drawArea.right, drawArea.bottom, _T("Name"));
+	pDC->TextOut(drawArea.right * 2, drawArea.bottom, _T("Manager"));
+	pDC->MoveTo(drawArea.left, drawArea.bottom);
+	pDC->LineTo(pInfo->m_rectDraw.right, drawArea.bottom);
+	drawArea.bottom += drawArea.bottom;
 
-	for (int movY = 2; !rs.IsEOF();movY+=2) {
-		cell = { margins.x, strSize.cy * movY+margins.y, cellX, strSize.cy * (movY+2)+margins.y };
-		pDC->DrawText(std::to_string(rs.m_id).c_str(), &cell, DT_LEFT | DT_BOTTOM);
-		cell = { cellX, strSize.cy * movY+margins.y, cellX * 2, strSize.cy * (movY+2)+margins.y};
-		pDC->DrawText(rs.m_name, &cell, DT_LEFT | DT_BOTTOM);
-		if (rs.m_manager) {
-			cell = { cellX * 2, strSize.cy * movY+margins.y, cellX * 3, strSize.cy * (movY+2)+margins.y };
-			pDC->DrawText(_T("x"), &cell, DT_LEFT | DT_BOTTOM);
-		}
+	while (!rs.IsEOF()) {
+		pDC->TextOut(drawArea.left, drawArea.bottom, std::to_string(rs.m_id).c_str());
+		pDC->TextOut(drawArea.right, drawArea.bottom, rs.m_name);
+		if (rs.m_manager) 
+			pDC->TextOut(drawArea.right * 2, drawArea.bottom, _T("x"));
+
+		drawArea.bottom += pDC->GetTextExtent(rs.m_name).cy*2;
 
 		rs.MoveNext();
 	}
+
 	CRecordView::OnPrint(pDC, pInfo);
 }
