@@ -120,9 +120,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	Set rs;
 	rs.Open();
 	CString tekst = "A";
-	int x = pDC->GetDeviceCaps(HORZRES) / 5;
+	int x = pInfo->m_rectDraw.right / 5;
 	CSize velicina = pDC->GetTextExtent(tekst);
-	int y = velicina.cy;
+	int y = pInfo->m_rectDraw.top + velicina.cy;
 
 	pDC->SetTextAlign(TA_LEFT);
 	pDC->TextOut(x, y, _T("id"));
@@ -130,10 +130,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	pDC->TextOut(x * 3, y, _T("manager"));
 
 	y += velicina.cy;
-
-	pDC->MoveTo(x, y);
-	pDC->LineTo(x * 4, y);
-
+	pDC->MoveTo(x, y + velicina.cy/2);
+	pDC->LineTo(x * 4, y + velicina.cy/2);
 
 	while (!rs.IsEOF()) {
 		y += velicina.cy;
