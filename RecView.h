@@ -47,6 +47,7 @@ public:
 // Implementation
 public:
 	virtual ~RecView();
+	void OnPrint(CDC * pDC, CPrintInfo* pInfo);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

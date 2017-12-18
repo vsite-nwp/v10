@@ -31,8 +31,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // RecView construction/destruction
 
-RecView::RecView()
-	: CRecordView(RecView::IDD)
+RecView::RecView() : CRecordView(RecView::IDD)
 {
 }
 
@@ -40,9 +39,43 @@ RecView::~RecView()
 {
 }
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) 
+{
+	if (pDC->IsPrinting())
+	{
+		CSize fSize = pDC->GetTextExtent("G");
+		int right = pInfo->m_rectDraw.right / 3;
+		int bottom = pInfo->m_rectDraw.bottom / fSize.cy;
+
+		Set rs;
+		rs.Open();
+
+		pDC->TextOut(fSize.cx, bottom, "ID: ");
+		pDC->TextOut(fSize.cx + right, bottom, "NAME: ");
+		pDC->TextOut(fSize.cx + right * 2, bottom, "MANAGER: ");
+		
+		while (!rs.IsEOF())
+		{
+			bottom += (fSize.cy * 2);
+
+			CString supstituteStr;
+			supstituteStr.Format(_T("%d"), rs.m_id);
+			pDC->TextOut(fSize.cx, bottom, supstituteStr);
+			
+			pDC->TextOut(fSize.cx + right, bottom, rs.m_name);
+			
+			if(rs.m_manager)
+				pDC->TextOut(fSize.cx + right * 2, bottom, "X");
+			
+			rs.MoveNext();
+		}
+	}
+
+}
+
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
-	//CRecordView::DoDataExchange(pDX);
+	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
