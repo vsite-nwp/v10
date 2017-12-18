@@ -75,7 +75,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
-	CRecordView::DoDataExchange(pDX);
+	//CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
