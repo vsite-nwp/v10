@@ -123,23 +123,25 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	rs.Open();
 	RECT r = pInfo->m_rectDraw;
 	int rmargin = r.right / 4;
-	int right = (r.right-rmargin)/3;
+	int middle = (r.right-rmargin)/3;
 	int step=pDC->GetTextExtent("X").cy*1.5;
-	
-	pDC->TextOut(right/2, step, _T("id"));
-	pDC->TextOut(right, step, _T("name"));
-	pDC->TextOut(2*right, step, _T("manager"));
-	pDC->MoveTo(right/2, step*2);
+	int idcol = middle / 2;
+	int namecol = middle;
+	int managercol = middle * 2;
+	pDC->TextOut(idcol, step, _T("id"));
+	pDC->TextOut(namecol, step, _T("name"));
+	pDC->TextOut(managercol, step, _T("manager"));
+	pDC->MoveTo(idcol, step*2);
 	pDC->LineTo(r.right-rmargin,step*2 );
-	int i = step * 3;
+	int current_y = step * 3;
 	while (!rs.IsEOF()) {
 		CString id; id.Format("%d", rs.m_id);
-		pDC->TextOut(right/2, i,id);
-		pDC->TextOut(right, i, _T(rs.m_name));		
+		pDC->TextOut(idcol, current_y,id);
+		pDC->TextOut(namecol, current_y, rs.m_name);		
 		if(rs.m_manager)
-			pDC->TextOut(right*2,i, "x");
+			pDC->TextOut(managercol,current_y, "x");
 		
-		i += step;
+		current_y += step;
 		rs.MoveNext();
 	} 
 
