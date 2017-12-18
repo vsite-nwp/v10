@@ -89,30 +89,33 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 	int i = 0;
 	int j = 1;
 	short k = rs.GetODBCFieldCount();
-	long x = pDC->GetDeviceCaps(HORZRES);
+	long x = pDC->GetDeviceCaps(HORZRES)/10;
 	long y = pDC->GetDeviceCaps(VERTRES);
 	CSize z = pDC->GetTextExtent(m_pSet->m_name);
 	int zcy = z.cy;
-	CODBCFieldInfo info;
-	CString id;
+	
+	//pInfo->m_rectDraw
 	
 	while (k > i) {
+		CODBCFieldInfo info; 
 		rs.GetODBCFieldInfo(i, info);
-		pDC->TextOut(j * x / 10, y / 15 - zcy * 2, info.m_strName);
-		i++; j += 2; 
+		pDC->TextOut(j * x, y / zcy * 4, info.m_strName);
+		i++; j+=2; 
 	}
 	
-	pDC->MoveTo(x / 10, y / 15);
-	pDC->LineTo(8 * x / 10, y / 15);
-	
+	pDC->MoveTo(x, y / zcy * 6);
+	pDC->LineTo(8 * x, y / zcy * 6);
+
 	j = k - 1;
+	zcy *= 4;
 	
 	while (!rs.IsEOF()) {
+		CString id;
 		id.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(x / 10, y / 15 + zcy, id); 
-		pDC->TextOut((x / 10)*k, y / 15 + zcy, rs.m_name);
+		pDC->TextOut(x,  zcy, id); 
+		pDC->TextOut(x*k, zcy, rs.m_name);
 		if (rs.m_manager)
-			pDC->TextOut((x / 10)*(k+j), y / 15 + zcy, "x"); 
+			pDC->TextOut(x*(k+j), zcy, "x"); 
 		zcy += z.cy; 
 		rs.MoveNext();
 	}
