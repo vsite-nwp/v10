@@ -33,9 +33,6 @@ END_MESSAGE_MAP()
 
 RecView::RecView()
 	: CRecordView(RecView::IDD)
-	, ID(0)
-	, NAME(_T(""))
-	, MANAGER(FALSE)
 {
 }
 
