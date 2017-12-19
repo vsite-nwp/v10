@@ -49,9 +49,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	int column = pInfo->m_rectDraw.right / fieldCount;
 	int row = pInfo->m_rectDraw.bottom / fSize.cy;
 	
-	pDC->TextOut(fSize.cx, row, "ID: ");
-	pDC->TextOut(fSize.cx + column, row, "NAME: ");
-	pDC->TextOut(fSize.cx + column * 2, row, "MANAGER: ");
+	pDC->TextOut(fSize.cx, row, "ID");
+	pDC->TextOut(fSize.cx + column, row, "NAME");
+	pDC->TextOut(fSize.cx + column * 2, row, "MANAGER");
 	
 	row += (fSize.cy * 2); 
 	pDC->MoveTo(0, row);
