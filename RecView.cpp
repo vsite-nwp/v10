@@ -118,33 +118,33 @@ CRecordset* RecView::OnGetRecordset()
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	
-	int horzres = pDC->GetDeviceCaps(HORZRES)/10;
+	int x = pInfo->m_rectDraw.right/10;
 	CSize TextSize = pDC->GetTextExtent("ID");
 	int y_move = TextSize.cy;
 
 
 	Set rs;
 	rs.Open();
-	pDC->TextOut(horzres, y_move, "ID");
-	pDC->TextOut(horzres*3, y_move, "Name");
-	pDC->TextOut(horzres*8, y_move, "Manger");
+	pDC->TextOut(x, y_move, "ID");
+	pDC->TextOut(x*3, y_move, "Name");
+	pDC->TextOut(x*8, y_move, "Manager");
 	y_move += TextSize.cy;
 	
-	pDC->MoveTo(horzres, y_move);
-	pDC->LineTo(horzres*9, y_move);
+	pDC->MoveTo(x, y_move);
+	pDC->LineTo(x*9, y_move);
 	y_move += TextSize.cy;
 
 	while (!rs.IsEOF()) {
 		CString str;
 		str.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(horzres, y_move, str);
-		pDC->TextOut(horzres*3, y_move, rs.m_name);
+		pDC->TextOut(x, y_move, str);
+		pDC->TextOut(x*3, y_move, rs.m_name);
 		
 		if (rs.m_manager) {
-			pDC->TextOut(horzres*7, y_move, "X");
+			pDC->TextOut(x*8, y_move, "X");
 		}
 		y_move += TextSize.cy;
 		rs.MoveNext();
 	}
-	CRecordView::OnPrint(pDC, pInfo);
+	
 }
