@@ -21,6 +21,7 @@ public:
 	//{{AFX_DATA(RecView)
 	enum { IDD = IDD_V10_FORM };
 	Set* m_pSet;
+	void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo);
 	//}}AFX_DATA
 
 // Attributes
