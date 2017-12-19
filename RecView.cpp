@@ -31,8 +31,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // RecView construction/destruction
 
-RecView::RecView()
-	: CRecordView(RecView::IDD)
+RecView::RecView() : CRecordView(RecView::IDD)
 {
 }
 
@@ -40,11 +39,52 @@ RecView::~RecView()
 {
 }
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) 
+{
+	Set rs;
+	rs.Open();
+	int fieldCount = rs.GetODBCFieldCount();
+	
+	CSize fSize = pDC->GetTextExtent("G");
+	int column = pInfo->m_rectDraw.right / fieldCount;
+	int row = pInfo->m_rectDraw.bottom / fSize.cy;
+	
+	//CString ime =
+	CString ime = rs.GetDefaultSQL();
+
+	pDC->TextOut(fSize.cx, row, "ID");
+	pDC->TextOut(fSize.cx + column, row, "NAME");
+	pDC->TextOut(fSize.cx + column * 2, row, "MANAGER");
+	
+	row += (fSize.cy * 2); 
+	pDC->MoveTo(0, row);
+	pDC->LineTo(column * fieldCount, row);
+		
+	while (!rs.IsEOF())
+	{
+		row += fSize.cy;
+
+		CString supstituteStr;
+		supstituteStr.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(fSize.cx, row, supstituteStr);
+			
+		pDC->TextOut(fSize.cx + column, row, rs.m_name);
+			
+		if(rs.m_manager)
+			pDC->TextOut(fSize.cx + column * 2, row, "X");
+			
+		rs.MoveNext();	
+	}
+}
+
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)

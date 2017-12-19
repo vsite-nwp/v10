@@ -42,11 +42,13 @@ public:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+	//za change
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
 	virtual ~RecView();
+	void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
