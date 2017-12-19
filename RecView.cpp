@@ -41,41 +41,42 @@ RecView::~RecView()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) 
 {
-	if (pDC->IsPrinting())
-	{
-		CSize fSize = pDC->GetTextExtent("G");
-		int right = pInfo->m_rectDraw.right / 3;
-		int bottom = pInfo->m_rectDraw.bottom / fSize.cy;
-
-		Set rs;
-		rs.Open();
-
-		pDC->TextOut(fSize.cx, bottom, "ID: ");
-		pDC->TextOut(fSize.cx + right, bottom, "NAME: ");
-		pDC->TextOut(fSize.cx + right * 2, bottom, "MANAGER: ");
+	Set rs;
+	rs.Open();
+	int fieldCount = rs.GetODBCFieldCount();
+	
+	CSize fSize = pDC->GetTextExtent("G");
+	int column = pInfo->m_rectDraw.right / fieldCount;
+	int row = pInfo->m_rectDraw.bottom / fSize.cy;
+	
+	pDC->TextOut(fSize.cx, row, "ID: ");
+	pDC->TextOut(fSize.cx + column, row, "NAME: ");
+	pDC->TextOut(fSize.cx + column * 2, row, "MANAGER: ");
+	
+	row += (fSize.cy * 2); 
+	pDC->MoveTo(0, row);
+	pDC->LineTo(column * fieldCount, row);
 		
-		while (!rs.IsEOF())
-		{
-			bottom += (fSize.cy * 2);
+	while (!rs.IsEOF())
+	{
+		row += fSize.cy;
 
-			CString supstituteStr;
-			supstituteStr.Format(_T("%d"), rs.m_id);
-			pDC->TextOut(fSize.cx, bottom, supstituteStr);
+		CString supstituteStr;
+		supstituteStr.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(fSize.cx, row, supstituteStr);
 			
-			pDC->TextOut(fSize.cx + right, bottom, rs.m_name);
+		pDC->TextOut(fSize.cx + column, row, rs.m_name);
 			
-			if(rs.m_manager)
-				pDC->TextOut(fSize.cx + right * 2, bottom, "X");
+		if(rs.m_manager)
+			pDC->TextOut(fSize.cx + column * 2, row, "X");
 			
-			rs.MoveNext();
-		}
+		rs.MoveNext();	
 	}
-
 }
 
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
-	//CRecordView::DoDataExchange(pDX);
+	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
