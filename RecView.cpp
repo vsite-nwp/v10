@@ -118,23 +118,38 @@ CRecordset* RecView::OnGetRecordset()
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	CString sID;
-	int cWidth = pDC->GetTextExtent("_").cx;
-	int cHeight = pDC->GetTextExtent("_").cy;
+	int cHeight = pDC->GetTextExtent("A").cy;
+	CRect rc = pInfo->m_rectDraw;
+
+	//margins
+	int lmargin = 500;
+	int tmargin = 500;
+	int rmargin = 1000;
+	int bmargin = 500;
+	int colID = 0;
+	int colName = colID + 1000;
+	int colManager = colName + 5000;
+	rc.DeflateRect(lmargin,tmargin,rmargin,bmargin);
+	pDC->SetViewportOrg(rc.left, rc.top);
+
 	int i = 3;
 	Set rs;
 	rs.Open();
-	while (!rs.IsEOF()) {
-		//table columns
-		pDC->TextOutA(cWidth * 10, cHeight * 1.5, _T("___________________________________________________________"));
-		pDC->TextOutA(cWidth * 10, cHeight, _T("id"));
-		pDC->TextOutA(cWidth * 20, cHeight, _T("name"));
-		pDC->TextOutA(cWidth * 40, cHeight, _T("manager"));
 
+	//table columns
+	pDC->MoveTo(0, cHeight * 2.5);
+	pDC->LineTo(rc.right, cHeight * 2.5);
+	pDC->TextOutA(colID,  cHeight, _T("id"));
+	pDC->TextOutA(colName, cHeight, _T("name"));
+	pDC->TextOutA(colManager, cHeight, _T("manager"));
+	while (!rs.IsEOF()) {
 		//rows
+		if (i * cHeight > rc.bottom)
+			break;
 		sID.Format("%ld", rs.m_id);
-		pDC->TextOutA(cWidth * 10, cHeight * i, sID);
-		pDC->TextOutA(cWidth * 20, cHeight * i, rs.m_name);
-		if(rs.m_manager) pDC->TextOutA(cWidth * 40, cHeight * i, _T("X"));
+		pDC->TextOutA(colID, cHeight * i, sID);
+		pDC->TextOutA(colName, cHeight * i, rs.m_name);
+		if(rs.m_manager) pDC->TextOutA(colManager, cHeight * i, _T("X"));
 		++i;
 
 		rs.MoveNext();
