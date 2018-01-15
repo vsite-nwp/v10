@@ -1,7 +1,7 @@
 // RecView.h : interface of the RecView class
 //
 /////////////////////////////////////////////////////////////////////////////
-
+#include "afxwin.h"
 #if !defined(AFX_RECVIEW_H__853B6D36_06B4_4C92_AE5A_AE47A448FE7A__INCLUDED_)
 #define AFX_RECVIEW_H__853B6D36_06B4_4C92_AE5A_AE47A448FE7A__INCLUDED_
 
@@ -59,8 +59,11 @@ protected:
 	//{{AFX_MSG(RecView)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-};
 
+public:
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
+
+};
 #ifndef _DEBUG  // debug version in RecView.cpp
 inline Doc* RecView::GetDocument()
    { return (Doc*)m_pDocument; }
