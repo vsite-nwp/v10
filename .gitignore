@@ -1,0 +1,8 @@
+﻿/Debug
+/Release
+*.suo
+*.db
+*.json
+*.opendb
+*.user
+*.sqlite
