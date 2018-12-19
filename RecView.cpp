@@ -7,6 +7,7 @@
 #include "Set.h"
 #include "Doc.h"
 #include "RecView.h"
+#include <cstring>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,8 +44,9 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(RecView)
-	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +112,35 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int x = pDC->GetDeviceCaps(HORZRES) / 10;
+	CSize textSize = pDC->GetTextExtent("X");
+	int size = textSize.cy;
+	int y = size;
+
+	Set rs;
+	rs.Open();
+	pDC->TextOut(x, y, "ID");
+	pDC->TextOut(x * 3, y, "Name");
+	pDC->TextOut(x * 6, y, "Manager");
+	y += 2*size;
+	
+	pDC->MoveTo(0, y);
+	pDC->LineTo(x * 10, y);
+	y += size;
+
+	while (!rs.IsEOF()) {
+		CString str;
+		str.Format(("%ld"), rs.m_id);
+		pDC->TextOut(x, y, str);
+		pDC->TextOut(x * 3, y, rs.m_name);
+		if(rs.m_manager) pDC->TextOut(x/4 * 25 , y, "X");
+
+		y += size;
+
+		rs.MoveNext();
+	}
+}
