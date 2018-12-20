@@ -7,7 +7,6 @@
 #include "Set.h"
 #include "Doc.h"
 #include "RecView.h"
-#include <cstring>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -126,8 +125,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	pDC->TextOut(x, y, "ID");
 	pDC->TextOut(x * 3, y, "Name");
 	pDC->TextOut(x * 6, y, "Manager");
-	y += 2*size;
-	
+	y += 2 * size;
+
 	pDC->MoveTo(0, y);
 	pDC->LineTo(x * 10, y);
 	y += size;
@@ -137,7 +136,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		str.Format(("%ld"), rs.m_id);
 		pDC->TextOut(x, y, str);
 		pDC->TextOut(x * 3, y, rs.m_name);
-		if(rs.m_manager) pDC->TextOut(x/4 * 25 , y, "X");
+		if (rs.m_manager) pDC->TextOut(x / 4 * 25, y, "X");
 
 		y += size;
 
