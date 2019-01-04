@@ -10,6 +10,8 @@
 #define IDC_EDIT1                       1000
 #define IDC_EDIT2                       1001
 #define IDC_CHECK1                      1002
+#define COL_2							3
+#define COL_3							9
 
 // Next default values for new objects
 // 
