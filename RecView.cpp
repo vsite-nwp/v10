@@ -118,14 +118,18 @@ CRecordset* RecView::OnGetRecordset()
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	CSize size = pDC->GetTextExtent("A");
+	char name[128], manager[128];
+
+	LoadString(NULL, IDS_NAME, name, sizeof name);
+	LoadString(NULL, IDS_MANAGER, manager, sizeof manager);
 
 	int horiz = pDC->GetDeviceCaps(HORZRES);
 	int x = horiz / 12;
 	int y = size.cy * 3;
 
 	pDC->TextOut(x, y, "ID");
-	pDC->TextOut(x * COL_2, y, "NAME");
-	pDC->TextOut(x * COL_3, y, "MANAGER");
+	pDC->TextOut(x * 3, y, name);
+	pDC->TextOut(x * 9, y, manager);
 	pDC->MoveTo(x, y += size.cy);
 	pDC->LineTo(x * 11, y);
 
@@ -136,9 +140,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		CString id;
 		id.Format("%d", rs.m_id);
 		pDC->TextOut(x, y += size.cy, id);
-		pDC->TextOut(x * COL_2, y, rs.m_name);
+		pDC->TextOut(x * 3, y, rs.m_name);
 		if (rs.m_manager)
-			pDC->TextOut(x * COL_3, y, "X");
+			pDC->TextOut(x * 9, y, "X");
 		rs.MoveNext();
 	}
 }
