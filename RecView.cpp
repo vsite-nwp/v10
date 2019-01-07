@@ -123,8 +123,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	int y = pDC->GetDeviceCaps(VERTRES) / 20;
 
 	int column_id = x+x/2;
-	int column_name = x*2;
-	int column_manager = x*4;
+	int column_name = x*3;
+	int column_manager = x*7;
 
 	pDC->TextOut(column_id, y, "Id");
 	pDC->TextOut(column_name, y, "Name");
@@ -144,7 +144,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		pDC->TextOut(column_id, y, _id);
 		pDC->TextOut(column_name, y, rs.m_name);
 		if (rs.m_manager)
-			pDC->TextOut(column_manager + pDC->GetTextExtent("Manager").cx / 2, y,"x");
+			pDC->TextOut(column_manager, y,"x");
 		y += height;
 
 		rs.MoveNext();
