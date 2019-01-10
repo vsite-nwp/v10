@@ -36,6 +36,7 @@ public:
 	public:
 	virtual CRecordset* OnGetRecordset();
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual void OnInitialUpdate(); // called first time after construct
@@ -59,6 +60,7 @@ protected:
 	//{{AFX_MSG(RecView)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
 };
 
 #ifndef _DEBUG  // debug version in RecView.cpp
@@ -72,3 +74,4 @@ inline Doc* RecView::GetDocument()
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_RECVIEW_H__853B6D36_06B4_4C92_AE5A_AE47A448FE7A__INCLUDED_)
+
