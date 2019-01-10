@@ -35,18 +35,18 @@ RecView::RecView()
 	: CRecordView(RecView::IDD)
 {
 }
-
 RecView::~RecView()
 {
 }
-
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
-
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	return CRecordView::PreCreateWindow(cs);
@@ -58,10 +58,7 @@ void RecView::OnInitialUpdate()
 	CRecordView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
-
 }
-
-/////////////////////////////////////////////////////////////////////////////
 // RecView printing
 
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
@@ -76,6 +73,48 @@ void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
+}
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+
+	int x = pDC->GetDeviceCaps(HORZRES);
+	int y = pDC->GetDeviceCaps(VERTRES);
+
+	CSize fontSize = pDC->GetTextExtent("A");
+	int mov = fontSize.cy;
+
+	int xid = y / 10;
+	int yname = y /	30;
+	int zmanager = y /70;
+
+
+	pDC->TextOut(xid,mov,"id");
+	pDC->TextOut(yname,mov,"name");
+	pDC->TextOut(zmanager,mov,"manager");
+	mov += fontSize.cy;
+
+	pDC->MoveTo(xid,mov);
+	pDC->LineTo(zmanager*2,mov);
+	mov += fontSize.cy;
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+
+		CString str;
+		str.Format("%d", rs.m_id);
+		pDC->TextOut(xid, mov, str);
+		pDC->TextOut(yname, mov, rs.m_name);
+		
+		if (rs.m_manager) 
+		{
+			pDC->TextOut(zmanager, mov,'X');
+		}
+		mov += fontSize.cy;
+		rs.MoveNext();
+	}
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -109,4 +148,5 @@ CRecordset* RecView::OnGetRecordset()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
+
 
