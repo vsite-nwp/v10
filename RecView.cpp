@@ -52,26 +52,28 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 
 }
 
-void RecView::OnPrint(CDC* pDC, CPrintInfo* info) {
+void RecView::OnPrint(CDC* pDC, CPrintInfo* info) 
+{
 	int v = pDC->GetDeviceCaps(VERTRES);
 	int h = pDC->GetDeviceCaps(HORZRES);
-	CSize s = pDC->GetTextExtent("A");
-	int x = h / 100;
-	int y = s.cy * 350;
+	CSize s = pDC->GetTextExtent("X");
+	int x = h / 10;
+	int y = s.cy * 5;
 	pDC->TextOut(x, y, "Id");
-	pDC->TextOut(x * 50, y, "Name");
-	pDC->TextOut(x * 100, y, "Manager");
+	pDC->TextOut(x * 2, y, "Name");
+	pDC->TextOut(x * 4, y, "Manager");
 	pDC->MoveTo(x, y += s.cy);
-	pDC->LineTo(x * 100, y);
+	pDC->LineTo(x * 8, y);
 	Set rs;
 	rs.Open();
-	while (!rs.IsEOF()) {
+	while (!rs.IsEOF()) 
+	{
 		CString id;
 		id.Format("%d", rs.m_id);
 		pDC->TextOut(x, y += s.cy, id);
-		pDC->TextOut(x * 50, y, rs.m_name);
+		pDC->TextOut(x * 2, y, rs.m_name);
 		if (rs.m_manager)
-			pDC->TextOut(x * 100, y, "X");
+			pDC->TextOut(x * 4.3, y, "X");
 		rs.MoveNext();
 	}
 }
