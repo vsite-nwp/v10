@@ -31,9 +31,12 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // RecView construction/destruction
 
-RecView::RecView()
-	: CRecordView(RecView::IDD)
+RecView::RecView()	: CRecordView(RecView::IDD)
 {
+	CString section(_T("Print"));
+	numPages = AfxGetApp()->GetProfileInt(section, _T("NumPages"), 4);
+	fontSize = AfxGetApp()->GetProfileInt(section, _T("FontSize"), 36);
+	fontName = AfxGetApp()->GetProfileString(section, _T("FontName"), _T("Times New Roman"));
 }
 
 RecView::~RecView()
@@ -45,6 +48,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -66,8 +72,9 @@ void RecView::OnInitialUpdate()
 
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 {
-	// default preparation
+	pInfo->SetMaxPage(numPages);
 	return DoPreparePrinting(pInfo);
+	
 }
 
 void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
@@ -110,3 +117,32 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int h_res = pDC->GetDeviceCaps(HORZRES);
+	CSize fontSize = pDC->GetTextExtent("A");
+	int newRow = fontSize.cy;
+	int x_id = h_res / 12;
+	int x_name = x_id * 3;
+	int x_manager = x_id * 6;
+	pDC->TextOut(x_id, newRow, "ID");
+	pDC->TextOut(x_name,newRow , "NAME");
+	pDC->TextOut(x_manager,newRow , "MANAGER");
+	newRow += newRow;
+	pDC->MoveTo(x_id, newRow);
+	pDC->LineTo(x_manager + (fontSize.cx * 8),newRow);
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString id;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(x_id, newRow+=fontSize.cy, id);
+		pDC->TextOut(x_name, newRow, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut(x_manager + (fontSize.cx * 3), newRow, "X");
+		// draw current record
+		rs.MoveNext();
+	}
+}
