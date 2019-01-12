@@ -40,6 +40,7 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual void OnInitialUpdate(); // called first time after construct
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
+	virtual void OnPrint(CDC* pDC, CPrintInfo* printInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 	//}}AFX_VIRTUAL
