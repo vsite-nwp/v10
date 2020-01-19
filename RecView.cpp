@@ -26,6 +26,9 @@ BEGIN_MESSAGE_MAP(RecView, CRecordView)
 	ON_COMMAND(ID_FILE_PRINT, CRecordView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, CRecordView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CRecordView::OnFilePrintPreview)
+	ON_EN_CHANGE(IDC_EDIT1, &RecView::OnEnChangeEdit1)
+	ON_EN_CHANGE(IDC_EDIT2, &RecView::OnEnChangeEdit2)
+	ON_BN_CLICKED(IDC_CHECK1, &RecView::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -119,10 +122,50 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	Set rs;
 	rs.Open();
-	int horiz=pDC->GetDeviceCaps(HORZRES);
-	int vert=pDC->GetDeviceCaps(VERTRES);
+	int horiz=pDC->GetDeviceCaps(HORZRES)/8;
+	int vert=pDC->GetDeviceCaps(VERTRES)/12;
 	CSize textht = pDC->GetTextExtent("Mj");
+	double namespacing = 1.5;
+	int mngspacing = 4;
+	int rowht = textht.cy + vert*1.1;
+	pDC->TextOut(horiz, vert, "ID");
+	pDC->TextOut(horiz*namespacing, vert, "NAME");
+	pDC->TextOut(horiz * mngspacing, vert, "STATUS");
+	pDC->MoveTo(horiz,rowht);
+	pDC->LineTo(horiz * 8,rowht);
 	while (!rs.IsEOF()) {
+		CString id;
+		rowht +=textht.cy;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(horiz, rowht,id);
+		pDC->TextOut(horiz*namespacing, rowht, rs.m_name);
+		if (rs.m_manager) {
+			pDC->TextOut(horiz*mngspacing, rowht,"Manager");
+		}
+		else {
+			pDC->TextOut(horiz*mngspacing, rowht, "Peasant");
+		}
 		rs.MoveNext();
+		pDC->MoveTo(horiz, rowht);
+		pDC->LineTo(horiz * 8, rowht);
 	}
+	rowht += textht.cy;
+	pDC->MoveTo(horiz*namespacing*0.95, vert);
+	pDC->LineTo(horiz*namespacing*0.95, rowht);
+	pDC->MoveTo(horiz*mngspacing*0.97, vert);
+	pDC->LineTo(horiz*mngspacing*0.97, rowht);
+}
+
+
+void RecView::OnEnChangeEdit1()
+{
+	//IDEA: send data to base somehow
+}
+void RecView::OnEnChangeEdit2()
+{
+	OnEnChangeEdit1();
+}
+void RecView::OnBnClickedCheck1()
+{
+	OnEnChangeEdit1();
 }

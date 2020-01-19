@@ -61,6 +61,10 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
+public:
+	afx_msg void OnEnChangeEdit1();
+	afx_msg void OnEnChangeEdit2();
+	afx_msg void OnBnClickedCheck1();
 };
 
 #ifndef _DEBUG  // debug version in RecView.cpp
