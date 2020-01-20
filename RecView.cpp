@@ -70,12 +70,13 @@ void RecView::OnInitialUpdate()
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 {
 	// default preparation
-	/*pInfo->SetMaxPage(1);	*/
+	
+	pInfo->SetMaxPage(1);	
 	return DoPreparePrinting(pInfo);
 }
 
 void RecView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
-{
+{	
 }
 
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
@@ -89,6 +90,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* PInfo)
 	int xPos = width / 10;
 	int yPos = height / 10;
 	CSize fontSize = pDC->GetTextExtent("ID");
+	
 	pDC->TextOut(xPos, yPos, "Id");
 	pDC->TextOut(xPos * 2, yPos, "Name");
 	pDC->TextOut(xPos * 4, yPos, "Manager");
@@ -114,7 +116,6 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* PInfo)
 
 		rs.MoveNext();
 	}
-	PInfo->SetMaxPage(PInfo->m_nCurPage);
 	CString footer;
 	footer.Format("Page %d of %d", PInfo->m_nCurPage, PInfo->GetMaxPage());
 	pDC->DrawText(footer, PInfo->m_rectDraw, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
