@@ -70,10 +70,11 @@ void RecView::OnInitialUpdate()
 BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 {
 	// default preparation
+	/*pInfo->SetMaxPage(1);	*/
 	return DoPreparePrinting(pInfo);
 }
 
-void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void RecView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
 {
 }
 
@@ -93,18 +94,15 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* PInfo)
 	pDC->TextOut(xPos * 4, yPos, "Manager");
 	yPos += fontSize.cy * 2;
 	pDC->MoveTo(xPos, yPos);
-	pDC->LineTo(xPos * 6, yPos);
+	pDC->LineTo(xPos * 6, yPos);	
 
 	Set rs;
 	rs.Open();
 
 	while (!rs.IsEOF()) 
 	{
-		CString id;	
-		id.Format("%d", rs.m_id);	
-		CString footer;
-		footer.Format("Page %d of %d", PInfo->m_nCurPage, PInfo->GetMaxPage());
-		pDC->DrawText(footer, PInfo->m_rectDraw, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
+		CString id;			
+		id.Format("%d", rs.m_id);			
 		yPos += fontSize.cy;
 		pDC->TextOut(xPos, yPos, id);
 		pDC->TextOut(xPos * 2, yPos, rs.m_name);
@@ -116,6 +114,10 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* PInfo)
 
 		rs.MoveNext();
 	}
+	PInfo->SetMaxPage(PInfo->m_nCurPage);
+	CString footer;
+	footer.Format("Page %d of %d", PInfo->m_nCurPage, PInfo->GetMaxPage());
+	pDC->DrawText(footer, PInfo->m_rectDraw, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
 }
 
 /////////////////////////////////////////////////////////////////////////////
