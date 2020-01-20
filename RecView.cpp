@@ -1,4 +1,4 @@
-// RecView.cpp : implementation of the RecView class
+﻿// RecView.cpp : implementation of the RecView class
 //
 
 #include "stdafx.h"
@@ -45,6 +45,10 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -110,3 +114,28 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int okomito = pDC->GetDeviceCaps(VERTRES);
+	int vodoravno = pDC->GetDeviceCaps(HORZRES);
+	CSize size = pDC->GetTextExtent("A");
+	int y = okomito / 40;
+	int x = vodoravno / 10;
+	pDC->TextOut(x, y, "ID");
+	pDC->TextOut(x * 3, y, "Naziv");
+	pDC->TextOut(x * 9, y, "Menađer");
+	pDC->MoveTo(x, y + size.cy);
+	pDC->LineTo(x * 10, y + size.cy);
+	Set r;
+	r.Open();
+	while (!r.IsEOF()) {
+		y += size.cy;
+		CString id;
+		id.Format("%d", r.m_id);
+		pDC->TextOut(x, y, id);
+		pDC->TextOut(x * 3, y, r.m_name);
+		if (r.m_manager)
+			pDC->TextOut(x * 6, y, "X");
+		r.MoveNext();
+	}
+}
