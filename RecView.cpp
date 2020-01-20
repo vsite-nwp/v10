@@ -113,3 +113,29 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
+	int vertical = pDC->GetDeviceCaps(VERTRES);
+	int horizontal = pDC->GetDeviceCaps(HORZRES);
+	CSize fontSize = pDC->GetTextExtent("A");
+	int x = horizontal / 12;
+	int y = fontSize.cy * 3;
+	pDC->TextOut(x, y, "id");
+	pDC->TextOut(x * 3, y, "name");
+	pDC->TextOut(x * 9, y, "manager");
+	pDC->MoveTo(x, y += fontSize.cy);
+	pDC->LineTo(x * 11, y);
+	Set rs;
+	rs.Open();
+
+	while (!rs.IsEOF()) {
+		CString id;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(x, y += fontSize.cy, id);
+		pDC->TextOut(x * 3, y, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut(x * 8, y, "X");
+		rs.MoveNext();
+	}
+
+}
