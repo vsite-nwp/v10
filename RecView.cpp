@@ -43,7 +43,11 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+
 	//{{AFX_DATA_MAP(RecView)
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 	//}}AFX_DATA_MAP
 }
 
@@ -110,3 +114,33 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int horizontalWidth = pDC->GetDeviceCaps(HORZRES);
+	int verticalHeight = pDC->GetDeviceCaps(VERTRES);
+	CSize s = pDC->GetTextExtent("A");
+	int x = horizontalWidth / 10;
+	int y = s.cy * 3;
+
+	pDC->TextOut(x, y, "id");
+	pDC->TextOut(x * 2, y, "name");
+	pDC->TextOut(x * 4, y, "manager");
+
+	y += s.cy;
+	pDC->MoveTo(x, y);
+	pDC->LineTo(x * 11, y);
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF())
+	{
+		CString id;
+		id.Format("%d", rs.m_id);
+		y += s.cy;
+		pDC->TextOut(x, y, id);
+		pDC->TextOut(x * 2, y, rs.m_name);
+		if (rs.m_manager)
+			pDC->TextOut(x * 4, y, "X");
+		rs.MoveNext();
+	}
+}
