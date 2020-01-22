@@ -1,4 +1,4 @@
-// RecView.cpp : implementation of the RecView class
+﻿// RecView.cpp : implementation of the RecView class
 //
 
 #include "stdafx.h"
@@ -112,28 +112,29 @@ CRecordset* RecView::OnGetRecordset()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
-void RecView::Print(CDC* pDC, CPrintInfo* pInfo)
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	int vertikalno = pDC->GetDeviceCaps(VERTRES);
 	int horizontalno = pDC->GetDeviceCaps(HORZRES);
-	int x = horizontalno / 12;
+	
 	CSize size = pDC->GetTextExtent("A");
-	int y = size.cy * 3;
-	pDC->TextOut(x, y, "ID");
-	pDC->TextOut(x * 5, y, "NAME");
-	pDC->TextOut(x * 10, y, "MANAGER");
-	pDC->MoveTo(x, y += size.cy);
-	pDC->LineTo(x * 10, y);
+	int x = horizontalno / 12;
+	int y = vertikalno / 30;
+	pDC->TextOut(x, y, "id");
+	pDC->TextOut(x * 5, y, "Naziv");
+	pDC->TextOut(x * 10, y, "manager");
+	pDC->MoveTo(x, y + size.cy);
+	pDC->LineTo(x * 10, y + size.cy);
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()) {
 		CString id;
+		y += size.cy;
 		id.Format("%d", rs.m_id);
-		pDC->TextOut(x, y += size.cy, id);
+		pDC->TextOut(x, y, id);
 		pDC->TextOut(x * 5, y, rs.m_name);
 		if (rs.m_manager)
 			pDC->TextOut(x * 10, y, "X");
 		rs.MoveNext();
 	}
 }
-
