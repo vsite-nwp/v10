@@ -116,13 +116,16 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 	int visina = pDC->GetDeviceCaps(VERTRES);
 	int sirina = pDC->GetDeviceCaps(HORZRES);
 	CSize fontsize = pDC->GetTextExtent("A");
+	int pomak = fontsize.cy;
 	int X = sirina / 10;
 	int Y = visina / 30;
 	pDC->TextOut(X, Y, "ID");
 	pDC->TextOut(X * 3, Y, "Name");
 	pDC->TextOut(X * 5, Y, "Manager");
+	pomak += fontsize.cy;
 	pDC->MoveTo(X, Y);
 	pDC->LineTo(X * 5, Y);
+	pomak += fontsize.cy;
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()) {
@@ -132,6 +135,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 		pDC->TextOut(X * 2, Y, rs.m_name);
 		if (rs.m_manager)
 			pDC->TextOut(X * 5, Y, "X");
+		pomak += fontsize.cy;
 		rs.MoveNext();
 	}
  }
