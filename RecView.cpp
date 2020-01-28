@@ -1,5 +1,9 @@
+﻿
+
 // RecView.cpp : implementation of the RecView class
-//
+
+
+
 
 #include "stdafx.h"
 #include "v10.h"
@@ -45,13 +49,16 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
+
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	return CRecordView::PreCreateWindow(cs);
 }
-
 void RecView::OnInitialUpdate()
 {
 	m_pSet = &GetDocument()->m_set;
@@ -98,7 +105,6 @@ Doc* RecView::GetDocument() // non-debug version is inline
 	return (Doc*)m_pDocument;
 }
 #endif //_DEBUG
-
 /////////////////////////////////////////////////////////////////////////////
 // RecView database support
 CRecordset* RecView::OnGetRecordset()
@@ -110,3 +116,27 @@ CRecordset* RecView::OnGetRecordset()
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int vc = pDC->GetDeviceCaps(VERTRES);
+	int ht = pDC->GetDeviceCaps(HORZRES);
+	CSize size = pDC->GetTextExtent("A");
+	int vcalc = vc / 40;
+	int hcalc = ht / 10;
+	pDC->TextOut(hcalc, vcalc, "ID");
+	pDC->TextOut(hcalc * 3, vcalc, "Naziv");
+	pDC->TextOut(hcalc * 9, vcalc, "Menađer");
+	pDC->MoveTo(hcalc, vcalc + size.cy);
+	pDC->LineTo(hcalc * 10, vcalc + size.cy);
+	Set rf;
+	rf.Open();
+	while (!rf.IsEOF()) {
+		vcalc += size.cy;
+		CString id;
+		id.Format("%d", rf.m_id);
+		pDC->TextOut(hcalc, vcalc, id);
+		pDC->TextOut(hcalc * 3, vcalc, rf.m_name);
+		if (rf.m_manager)
+			pDC->TextOut(hcalc * 6, vcalc, "X");
+		rf.MoveNext();
+	}
