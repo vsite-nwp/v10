@@ -16,8 +16,7 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(Set, CRecordset)
 
-Set::Set(CDatabase* pdb)
-	: CRecordset(pdb)
+Set::Set(CDatabase* pdb) : CRecordset(pdb)
 {
 	//{{AFX_FIELD_INIT(Set)
 	m_id = 0;
@@ -30,12 +29,12 @@ Set::Set(CDatabase* pdb)
 
 CString Set::GetDefaultConnect()
 {
-	return _T("ODBC;DSN=V10");
+	return _T("ODBC;DSN=Nwp_vj10");
 }
 
 CString Set::GetDefaultSQL()
 {
-	return _T("[User]");
+	return _T("[User]"); 
 }
 
 void Set::DoFieldExchange(CFieldExchange* pFX)
