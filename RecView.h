@@ -13,6 +13,8 @@ class Set;
 
 class RecView : public CRecordView
 {
+	int fontSize;
+	CString fontName;
 protected: // create from serialization only
 	RecView();
 	DECLARE_DYNCREATE(RecView)

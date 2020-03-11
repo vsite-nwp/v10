@@ -7,6 +7,7 @@
 #include "Set.h"
 #include "Doc.h"
 #include "RecView.h"
+#include <tchar.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +35,9 @@ END_MESSAGE_MAP()
 RecView::RecView()
 	: CRecordView(RecView::IDD)
 {
+	CString section(_T("Print"));
+	fontSize = AfxGetApp()->GetProfileInt(section, _T("FontSize"), 16);
+	fontName = AfxGetApp()->GetProfileString(section, _T("FontName"), _T("Arial"));
 }
 
 RecView::~RecView()
@@ -117,25 +121,32 @@ CRecordset* RecView::OnGetRecordset()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
+	CFont font,*old_font;
+	LOGFONT lf = { 0 };
+	lf.lfHeight = -MulDiv(fontSize, pDC->GetDeviceCaps(LOGPIXELSY), 72);
+	_tcscpy_s(lf.lfFaceName, fontName);
+	font.CreateFontIndirect(&lf);
+	old_font =  pDC->SelectObject(&font);
 	Set rs;
 	rs.Open();
-	CRect rc; GetClientRect(&rc);
-	if (pDC->IsPrinting()) {
-		rc.right = pDC->GetDeviceCaps(HORZRES);
-		rc.bottom = pDC->GetDeviceCaps(VERTRES);
-	}
 	CSize cs = pDC->GetTextExtent("A");
+	int x = pDC->GetDeviceCaps(LOGPIXELSX);
 	int y = 0;
-	CString header = "id\t\tname\t\tmanager";
-	pDC->TextOut(0, y, header);
+	pDC->TextOut(0, y, "id");
+	pDC->TextOut(x, y, "name");
+	pDC->TextOut(4*x, y, "manager");
 	y += cs.cy;
 	pDC->MoveTo(0, y);
-	pDC->LineTo(cs.cx*_tcslen(header),y);
+	pDC->LineTo(5*x,y);
 	y += cs.cy;
 	while (!rs.IsEOF()) {
 		CString id_str; id_str.Format("%d", rs.m_id);
-		pDC->TextOut(0, y, id_str + "\t\t" + rs.m_name + "\t\t" + (rs.m_manager ? "X" : ""));
+		pDC->TextOut(0, y, id_str);
+		pDC->TextOut(x, y, rs.m_name);
+		pDC->TextOut(4 * x, y, rs.m_manager? "X" : "");
 		y+=cs.cy;
 		rs.MoveNext();
 	}
+	pDC->SelectObject(old_font);
+	font.DeleteObject();
 }
