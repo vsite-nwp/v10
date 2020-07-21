@@ -83,12 +83,13 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 	int sirina = pDC->GetDeviceCaps(VERTRES);
 	int visina = pDC->GetDeviceCaps(HORZRES);
 	int x = sirina / 10;
-	int y = pDC->GetTextExtent("A").cy / 10;
+	int font = pDC->GetTextExtent("A").cy;
+	int y = font / 10;
 
-	pDC->TextOutA(x, y, "ID");
-	pDC->TextOutA(x * 1.5, y, "name");
-	pDC->TextOutA(x * 3, y, "manager");
-	pDC->MoveTo(x, y += pDC->GetTextExtent("A").cy);
+	pDC->TextOut(x, y, "ID");
+	pDC->TextOut(x * 1.5, y, "name");
+	pDC->TextOut(x * 3, y, "manager");
+	pDC->MoveTo(x, y += font);
 	pDC->LineTo(x * 3.5, y);
 
 	Set rs;
@@ -98,11 +99,11 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo) {
 			CString id;
 			
 			id.Format("%d", rs.m_id);
-			pDC->TextOutA(x, y += pDC->GetTextExtent("A").cy, id);
-			pDC->TextOutA(x * 1.5, y, rs.m_name);
+			pDC->TextOut(x, y += font, id);
+			pDC->TextOut(x * 1.5, y, rs.m_name);
 			
 			if (rs.m_manager)
-				pDC->TextOutA(x * 3.5, y, "X");
+				pDC->TextOut(x * 3.5, y, "X");
 			
 			rs.MoveNext();
 		}
