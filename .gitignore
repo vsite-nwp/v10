@@ -6,3 +6,6 @@
 *.opendb
 *.user
 *.sqlite
+*.ipch
+*.db-shm
+*.db-wal

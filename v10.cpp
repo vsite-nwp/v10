@@ -43,7 +43,6 @@ App theApp;
 
 BOOL App::InitInstance()
 {
-	AfxEnableControlContainer();
 	SetRegistryKey(_T("NWP"));
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
