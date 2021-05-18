@@ -45,6 +45,9 @@ void RecView::DoDataExchange(CDataExchange* pDX)
 	CRecordView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -104,6 +107,31 @@ Doc* RecView::GetDocument() // non-debug version is inline
 CRecordset* RecView::OnGetRecordset()
 {
 	return m_pSet;
+}
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* printInfo) {
+	const int width = pDC->GetDeviceCaps(VERTRES);
+	const int x = width / 20;
+	int y = 0;
+	pDC->TextOut(x, y, "ID");
+	pDC->TextOut(x * 7, y, "name");
+	pDC->TextOut(x * 12, y, "manager");
+	pDC->MoveTo(x, y += 100);
+	pDC->LineTo(x * 13, y);
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		CString id;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(x, y += 100, id);
+		pDC->TextOut(x * 7, y, rs.m_name);
+
+		if (rs.m_manager)
+			pDC->TextOut(x * 12, y, "X");
+		rs.MoveNext();
+	}
+
 }
 
 
