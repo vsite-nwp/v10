@@ -43,6 +43,9 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
@@ -109,4 +112,38 @@ CRecordset* RecView::OnGetRecordset()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	int printingWidth = (pDC->GetDeviceCaps(HORZRES));
+	int printColumns = printingWidth / 20;
+	CSize fontSize = pDC->GetTextExtent("NWP");
+	int point = 0;
 
+	//Print column names
+	pDC->TextOut(printColumns, point, _T("ID"));
+	pDC->TextOutA(printColumns * 7, point, _T("user_name"));
+	pDC->TextOutA(printColumns * 12, point, _T("manager"));
+
+	//Draw line below column names
+	point += 200;
+	pDC->MoveTo(printColumns, point);
+	pDC->LineTo(printColumns * 13, point);
+
+
+	Set recSet;
+	recSet.Open();
+	while (!recSet.IsEOF())
+	{
+		CString id;
+		id.Format("%d", recSet.m_id);
+
+		point += 200; //Move row below by value
+		pDC->TextOut(printColumns, point, id);
+		pDC->TextOutA(printColumns * 7, point, recSet.m_name); //Print user name
+
+		if (recSet.m_manager)
+			pDC->TextOutA(printColumns * 12, point, _T("x")); //Print X if user is manager
+
+		recSet.MoveNext();
+	}
+}
