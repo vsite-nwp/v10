@@ -42,8 +42,8 @@ void Set::DoFieldExchange(CFieldExchange* pFX)
 {
 	//{{AFX_FIELD_MAP(Set)
 	pFX->SetFieldType(CFieldExchange::outputColumn);
-	RFX_Long(pFX, _T("[id]"), m_id);
-	RFX_Text(pFX, _T("[name]"), m_name);
+	RFX_Long(pFX, _T("[ID]"), m_id);
+	RFX_Text(pFX, _T("[userName]"), m_name);
 	RFX_Bool(pFX, _T("[manager]"), m_manager);
 	//}}AFX_FIELD_MAP
 }

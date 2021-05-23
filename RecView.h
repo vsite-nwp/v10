@@ -34,6 +34,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(RecView)
 	public:
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 	virtual CRecordset* OnGetRecordset();
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	protected:
