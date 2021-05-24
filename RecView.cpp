@@ -116,8 +116,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	int printingWidth = (pDC->GetDeviceCaps(HORZRES));
 	int printColumns = printingWidth / 20;
-	CSize fontSize = pDC->GetTextExtent("NWP");
-	int point = 0;
+	CSize textLineDimensions = pDC->GetTextExtent("NWP");
+	int point = 100; //Malo ljepse
 
 	//Print column names
 	pDC->TextOut(printColumns, point, _T("ID"));
@@ -125,9 +125,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	pDC->TextOutA(printColumns * 12, point, _T("manager"));
 
 	//Draw line below column names
-	point += 200;
+	point += textLineDimensions.cy + 100;
 	pDC->MoveTo(printColumns, point);
-	pDC->LineTo(printColumns * 13, point);
+	pDC->LineTo(printColumns * 14, point);
 
 
 	Set recSet;
@@ -137,7 +137,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		CString id;
 		id.Format("%d", recSet.m_id);
 
-		point += 200; //Move row below by value
+		point += textLineDimensions.cy + 100; //Move row below by value
 		pDC->TextOut(printColumns, point, id);
 		pDC->TextOutA(printColumns * 7, point, recSet.m_name); //Print user name
 
