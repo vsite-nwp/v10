@@ -74,8 +74,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* printInfo) {
 	int y = textExtent.cy * 3;
 
 
-	pDC->TextOutA(x, y, "_id");
-	pDC->TextOutA(x * 3, y, "_name");
+	pDC->TextOutA(x, y, "id");
+	pDC->TextOutA(x * 3, y, "name");
 	pDC->TextOutA(x * 6, y, "manager");
 
 	pDC->MoveTo(x, y += textExtent.cy);
