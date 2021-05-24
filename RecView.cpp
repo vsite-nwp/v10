@@ -43,8 +43,9 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(RecView)
-	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -109,4 +110,38 @@ CRecordset* RecView::OnGetRecordset()
 
 /////////////////////////////////////////////////////////////////////////////
 // RecView message handlers
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo){
+	const int printWidth = pDC->GetDeviceCaps(HORZRES);
+	const CSize fontSize = pDC->GetTextExtent("NWP V10");
+	const int x = printWidth / 10;
+	int y = fontSize.cy;
 
+	pDC->TextOut(x, y, _T("id"));
+	pDC->TextOutA(x *3 , y, _T("name"));
+	pDC->TextOutA(x * 3, y, _T("manager"));
+
+	pDC->MoveTo(x, y += fontSize.cy);
+	pDC->LineTo(x * 9, y);
+
+
+	Set set;
+	set.Open();
+
+	while (!set.IsEOF()){
+
+		CString id;
+
+		id.Format("%d", set.m_id);
+
+
+		y += fontSize.cy * 2;
+
+		pDC->TextOut(x, y, id);
+		pDC->TextOutA(x * 2, y, set.m_name);
+
+		if (set.m_manager)
+			pDC->TextOutA(x * 5, y, _T("x"));
+
+		set.MoveNext();
+	}
+}

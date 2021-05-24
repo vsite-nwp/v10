@@ -36,6 +36,10 @@ public:
 	public:
 	virtual CRecordset* OnGetRecordset();
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
+
+
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual void OnInitialUpdate(); // called first time after construct
@@ -43,7 +47,7 @@ public:
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 public:
 	virtual ~RecView();
