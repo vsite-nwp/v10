@@ -14,6 +14,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // Set implementation
 
+
 IMPLEMENT_DYNAMIC(Set, CRecordset)
 
 Set::Set(CDatabase* pdb)
