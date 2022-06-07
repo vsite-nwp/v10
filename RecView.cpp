@@ -119,6 +119,17 @@ CRecordset* RecView::OnGetRecordset()
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	int horizontal = pDC->GetDeviceCaps(HORZRES);
+	int vertical = pDC->GetDeviceCaps(VERTRES);
+	CSize fontSize = pDC->GetTextExtent("Font");
+	
 
 	CRecordView::OnPrint(pDC, pInfo);
+
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		// draw current record
+		rs.MoveNext();
+	}
 }
