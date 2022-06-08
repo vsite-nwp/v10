@@ -118,21 +118,15 @@ CRecordset* RecView::OnGetRecordset()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	// TODO: Add your specialized code here and/or call the base class
 	int horizontal = pDC->GetDeviceCaps(HORZRES); //5100
 	int vertical = pDC->GetDeviceCaps(VERTRES);   //6600
 	CSize fontSize = pDC->GetTextExtent("Font");
-	//int pageSize = pInfo->m_rectDraw.Width();
 
 
 	int columns = horizontal / 7;
-	//int rows = fontSize.cy;
 	int row = fontSize.cy;
 
 
-	/*pDC->DrawText(_T("ID"),pInfo->m_rectDraw,DT_LEFT|DT_TOP);
-	pDC->DrawText(_T("Name"),pInfo->m_rectDraw,DT_CENTER|DT_TOP);
-	pDC->DrawText(_T("Menager"),pInfo->m_rectDraw,DT_RIGHT|DT_TOP);*/
 
 	pDC->TextOut(columns*2, row, _T("ID"));
 	pDC->TextOut(columns*4, row, _T("Name"));
@@ -143,14 +137,10 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	pDC->LineTo(horizontal,row);
 	
 
-	//CRecordView::OnPrint(pDC, pInfo); // to mi ne treba
-
-	//pDC->MoveTo(0, rows);
 	row += fontSize.cy;
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()) {
-		// draw current record
 		CString id;
 		id.Format("%d", rs.m_id);
 
@@ -165,7 +155,4 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		row += fontSize.cy;
 		rs.MoveNext();
 	}
-
-	//OnBeginPrinting izraèuna koliko pixela zauzima svaki red
-	//u pInfo imamo visinu svake stranice CRect m_rectDraw
 }
