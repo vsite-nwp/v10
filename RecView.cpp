@@ -125,21 +125,28 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	//int pageSize = pInfo->m_rectDraw.Width();
 
 
-	int columns = horizontal / 6;
-	int rows = vertical / 10;
+	int columns = horizontal / 7;
+	//int rows = fontSize.cy;
+	int row = fontSize.cy;
 
 
-	pDC->DrawText(_T("ID"),pInfo->m_rectDraw,DT_LEFT|DT_TOP);
+	/*pDC->DrawText(_T("ID"),pInfo->m_rectDraw,DT_LEFT|DT_TOP);
 	pDC->DrawText(_T("Name"),pInfo->m_rectDraw,DT_CENTER|DT_TOP);
-	pDC->DrawText(_T("Menager"),pInfo->m_rectDraw,DT_RIGHT|DT_TOP);
+	pDC->DrawText(_T("Menager"),pInfo->m_rectDraw,DT_RIGHT|DT_TOP);*/
 
-	pDC->MoveTo(0,rows);
-	pDC->LineTo(horizontal,rows);
+	pDC->TextOut(columns*2, row, _T("ID"));
+	pDC->TextOut(columns*4, row, _T("Name"));
+	pDC->TextOut(columns*6, row, _T("Menager"));
+
+	row += row*2;
+	pDC->MoveTo(0,row);
+	pDC->LineTo(horizontal,row);
 	
 
-	CRecordView::OnPrint(pDC, pInfo);
+	//CRecordView::OnPrint(pDC, pInfo); // to mi ne treba
 
-
+	//pDC->MoveTo(0, rows);
+	row += fontSize.cy;
 	Set rs;
 	rs.Open();
 	while (!rs.IsEOF()) {
@@ -148,14 +155,14 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		id.Format("%d", rs.m_id);
 
 
-		pDC->TextOut(columns,rows,id);
-		pDC->TextOut(columns*2,rows,rs.m_name);
+		pDC->TextOut(columns*2,row,id);
+		pDC->TextOut(columns*4,row,rs.m_name);
 
 		if (rs.m_manager) {
-			pDC->TextOut(columns*4, rows, 'X');
+			pDC->TextOut(columns*6, row, 'X');
 		}
 		
-		rows += rows;
+		row += fontSize.cy;
 		rs.MoveNext();
 	}
 
