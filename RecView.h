@@ -29,7 +29,7 @@ public:
 
 // Operations
 public:
-
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(RecView)
