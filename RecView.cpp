@@ -75,10 +75,10 @@ BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* printInfo) {
 	int xRes = pDC->GetDeviceCaps(HORZRES);
-	int yRes = pDC->GetDeviceCaps(VERTRES);
+	//int yRes = pDC->GetDeviceCaps(VERTRES);
 	CSize fontSize = pDC->GetTextExtent("A");
 	int rowSize = fontSize.cy;
-	int x = yRes / 10;
+	int x = xRes / 10;
 	int y = rowSize * 5;
 
 	pDC->TextOut(x, y, "Id");
