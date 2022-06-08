@@ -125,7 +125,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	//int pageSize = pInfo->m_rectDraw.Width();
 
 
-	int columns = horizontal / 3;
+	int columns = horizontal / 6;
 	int rows = vertical / 10;
 
 
@@ -148,11 +148,11 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		id.Format("%d", rs.m_id);
 
 
-		pDC->TextOut(0,rows,id);
-		pDC->TextOut(columns,rows,rs.m_name);
+		pDC->TextOut(columns,rows,id);
+		pDC->TextOut(columns*2,rows,rs.m_name);
 
 		if (rs.m_manager) {
-			pDC->TextOut(columns*2, rows, 'X');
+			pDC->TextOut(columns*4, rows, 'X');
 		}
 		
 		rows += rows;
