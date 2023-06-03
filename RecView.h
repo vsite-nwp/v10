@@ -53,7 +53,7 @@ public:
 #endif
 
 protected:
-
+	virtual void OnPrint(CDC* pDC, CPrintInfo* printInfo);
 // Generated message map functions
 protected:
 	//{{AFX_MSG(RecView)
