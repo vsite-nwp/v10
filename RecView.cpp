@@ -116,28 +116,28 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* printInfo)
 {
 	byte const name_offset = 2;
 	byte const manager_offset = 6;
-	int const row_heigth = pDC->GetTextExtent("A").cy;
+	int const row_height = pDC->GetTextExtent("A").cy;
 	int const x = pDC->GetDeviceCaps(HORZRES) / 8;
 
-	int y = pDC->GetDeviceCaps(VERTRES) / row_heigth;
+	int y = pDC->GetDeviceCaps(VERTRES) / row_height;
 
-	pDC->TextOutA(x, y, "ID");
-	pDC->TextOutA(x * name_offset, y, "Name");
-	pDC->TextOutA(x * manager_offset, y, "Manager");
+	pDC->TextOut(x, y, "ID");
+	pDC->TextOut(x * name_offset, y, "Name");
+	pDC->TextOut(x * manager_offset, y, "Manager");
 
-	pDC->MoveTo(x, y + row_heigth);
-	pDC->MoveTo(x * manager_offset, y + row_heigth);
+	pDC->MoveTo(x, y + row_height);
+	pDC->MoveTo(x * manager_offset, y + row_height);
 
 	Set set;
 	set.Open();
 
 	while (!set.IsEOF())
 	{
-		y += row_heigth;
+		y += row_height;
 		CString id;
 		id.Format("%d", set.m_id);
-		pDC->TextOutA(x, y, id);
-		pDC->TextOutA(x * name_offset, y, set.m_name);
+		pDC->TextOut(x, y, id);
+		pDC->TextOut(x * name_offset, y, set.m_name);
 		
 		if (set.m_manager)
 		{
