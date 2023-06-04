@@ -20,9 +20,6 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(RecView, CRecordView)
 
 BEGIN_MESSAGE_MAP(RecView, CRecordView)
-	//{{AFX_MSG_MAP(RecView)
-	//}}AFX_MSG_MAP
-	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CRecordView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, CRecordView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CRecordView::OnFilePrintPreview)
@@ -43,8 +40,9 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(RecView)
-	//}}AFX_DATA_MAP
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 }
 
 BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
@@ -59,6 +57,39 @@ void RecView::OnInitialUpdate()
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
 
+}
+
+void RecView::OnPrint(CDC* pDC,
+	CPrintInfo* pInfo)
+{
+	// set sizes
+	const CSize line_height = pDC->GetTextExtent("F");
+	const int x = pDC->GetDeviceCaps(HORZRES) / 7;
+	int y = line_height.cy * 3; // give a bit of space at the top
+
+	// set headers
+	pDC->TextOut(x, y, "Id");
+	pDC->TextOut(x * 2, y, "Name");
+	pDC->TextOut(x * 5, y, "Manager");
+
+	// draw separator
+	y += (line_height.cy * 2);
+	pDC->MoveTo(x - x / 2,y);
+	pDC->LineTo(x * 7 - x / 2, y);
+
+	// output all sets
+	Set rs;
+	rs.Open();
+	while (!rs.IsEOF()) {
+		y += (line_height.cy * 2);
+
+		CString id;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(x, y, id);
+		pDC->TextOut(x * 2, y, rs.m_name);
+		if (rs.m_manager) pDC->TextOut(x * 5, y, "X");
+		rs.MoveNext();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
