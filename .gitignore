@@ -9,3 +9,7 @@
 *.ipch
 *.db-shm
 *.db-wal
+*.aps
+/.vs
+/v10/x64
+/x64
