@@ -77,6 +77,36 @@ void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
 }
 
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	Set rs;
+	rs.Open();
+
+	pDC->TextOut(300, 50, _T("id"));
+	pDC->TextOut(700, 50, _T("name"));
+	pDC->TextOut(1400, 50, _T("manager"));
+	
+	int lineLength = 70;
+	CString line;
+	for (int i = 0; i < lineLength; ++i) {
+		line += _T('_');
+	}
+	pDC->TextOut(300, 100, line);
+
+	int y = 200;
+	while (!rs.IsEOF()) {
+		CString id;
+		id.Format("%d", rs.m_id);
+		pDC->TextOut(300, y, id);
+		pDC->TextOut(700, y, rs.m_name);
+		if (rs.m_manager != 0) {
+			pDC->TextOutA(1400, y, _T('x'));
+		}
+		y += 100;
+		rs.MoveNext();
+	}
+}
+
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
 }
