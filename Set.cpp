@@ -28,12 +28,12 @@ Set::Set(CDatabase* pdb)
 	m_nDefaultType = snapshot;
 }
 
-CString Set::GetDefaultConnect()
+CString Set::GetDefaultConnect()  // Which database to connect to.
 {
 	return _T("ODBC;DSN=V10");
 }
 
-CString Set::GetDefaultSQL()
+CString Set::GetDefaultSQL()  // Data source name (table, stored procedure).
 {
 	return _T("[User]");
 }
