@@ -82,27 +82,35 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	Set rs;
 	rs.Open();
 
-	pDC->TextOut(300, 50, _T("id"));
-	pDC->TextOut(700, 50, _T("name"));
-	pDC->TextOut(1400, 50, _T("manager"));
-	
-	int lineLength = 70;
-	CString line;
-	for (int i = 0; i < lineLength; ++i) {
-		line += _T('_');
-	}
-	pDC->TextOut(300, 100, line);
+	int printableWidth = pDC->GetDeviceCaps(HORZRES);  // For printers, the width, in pixels, of the printable area of the page.
 
-	int y = 200;
+	int col1 = printableWidth * 0.1;
+	int col2 = printableWidth * 0.25;
+	int col3 = printableWidth * 0.55;
+
+	int topMargin = 50;  // Distance from top of printable area to upper edge of text.
+
+	pDC->TextOut(col1, topMargin, _T("id"));
+	pDC->TextOut(col2, topMargin, _T("name"));
+	pDC->TextOut(col3, topMargin, _T("manager"));
+
+	int col3Width = printableWidth * 0.2;
+
+	long textHeight = pDC->GetTextExtent("id").cy;
+
+	pDC->MoveTo(col1, topMargin + textHeight + textHeight / 2);
+	pDC->LineTo(col3 + col3Width, topMargin + textHeight + textHeight / 2);
+
+	int y = topMargin + textHeight * 2;
 	while (!rs.IsEOF()) {
 		CString id;
 		id.Format("%d", rs.m_id);
-		pDC->TextOut(300, y, id);
-		pDC->TextOut(700, y, rs.m_name);
+		pDC->TextOut(col1, y, id);
+		pDC->TextOut(col2, y, rs.m_name);
 		if (rs.m_manager != 0) {
-			pDC->TextOutA(1400, y, _T('x'));
+			pDC->TextOut(col3, y, _T('x'));
 		}
-		y += 100;
+		y += textHeight;
 		rs.MoveNext();
 	}
 }
