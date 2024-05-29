@@ -67,10 +67,10 @@ void RecView::OnInitialUpdate()
 /////////////////////////////////////////////////////////////////////////////
 // RecView printing
 
-BOOL RecView::OnPreparePrinting(CPrintInfo* pInfo)
+BOOL RecView::OnPreparePrinting(CPrintInfo* pI)
 {
 	// default preparation
-	return DoPreparePrinting(pInfo);
+	return DoPreparePrinting(pI);
 }
 
 void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
@@ -94,9 +94,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	int yPos = lineHeight;
 
 
-	pDC->TextOut(0, yPos, _T("ID"));
-	pDC->TextOut(pageWidth / 4, yPos, _T("Name"));
-	pDC->TextOut(2 * (pageWidth / 4), yPos, _T("Manager"));
+	pDC->TextOut(0, yPos, _T("Id"));
+	pDC->TextOut(pageWidth / 3, yPos, _T("IME"));
+	pDC->TextOut(3 * (pageWidth / 3), yPos, _T("MANAGER"));
 
 
 	yPos += lineHeight;
@@ -110,9 +110,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		CString id;
 		id.Format(_T("%d"), rs.m_id);
 		pDC->TextOut(0, yPos, id);
-		pDC->TextOut(pageWidth / 4, yPos, rs.m_name);
-		CString manager = rs.m_manager ? _T("X") : _T("");
-		pDC->TextOut(2 * (pageWidth / 4), yPos, manager);
+		pDC->TextOut(pageWidth / 5, yPos, rs.m_name);
+		CString m = rs.m_manager ? _T("X") : _T("");
+		pDC->TextOut(3 * (pageWidth / 5), yPos, m);
 
 		yPos += lineHeight;
 		rs.MoveNext();
