@@ -19,7 +19,8 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	Set m_set;
+	CDatabase* m_db;
+	Set* m_set;
 
 // Operations
 public:
