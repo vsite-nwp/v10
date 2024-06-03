@@ -30,7 +30,7 @@ Set::Set(CDatabase* pdb)
 
 CString Set::GetDefaultConnect()
 {
-	return _T("User");
+	return _T("DSN=User;UID");
 }
 
 CString Set::GetDefaultSQL()

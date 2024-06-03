@@ -32,21 +32,13 @@ Doc::Doc()
 
 Doc::~Doc()
 {
-	if(m_db!=NULL)
-	if (m_db->IsOpen())
-		m_db->Close();
-	delete m_db;
+	
 
 }
 
 BOOL Doc::OnNewDocument()
 {
-	m_db = new CDatabase();
-	m_db->OpenEx(_T("DSN=User;UID"));
 
-
-	m_set = new Set(m_db);
-	m_set->Open();
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 

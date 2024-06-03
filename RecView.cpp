@@ -56,10 +56,8 @@ BOOL RecView::PreCreateWindow(CREATESTRUCT& cs)
 void RecView::OnInitialUpdate()
 {
 
-	CDatabase* pDatabase = new CDatabase();
-	pDatabase->OpenEx(_T("DSN=User;UID"));
-
-	m_pSet = GetDocument()->m_set;
+	
+	m_pSet = &GetDocument()->m_set;
 
 
 	CRecordView::OnInitialUpdate();
