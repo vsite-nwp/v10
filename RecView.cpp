@@ -88,32 +88,42 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 
 	CSize textSize = pDC->GetTextExtent(_T("Sample Text"));
 	int lineHeight = textSize.cy;
+	int borderHeight = textSize.cy + textSize.cy / 2;
 
 
 	Set rs;
 	rs.Open();
 	int yPos = lineHeight;
+	int leftMargin = 200;
+	int rightMargin = pageWidth - leftMargin;
 
 
-	pDC->TextOut(0, yPos, _T("id"));
+	pDC->TextOut(leftMargin, yPos, _T("id"));
 	pDC->TextOut(pageWidth / 4, yPos, _T("name"));
 	pDC->TextOut(2 * (pageWidth / 4), yPos, _T("manager"));
 
 
-	yPos += lineHeight;
-	pDC->MoveTo(0, yPos);
-	pDC->LineTo(pageWidth, yPos);
+	yPos += borderHeight;
+	pDC->MoveTo(leftMargin, yPos);
+	pDC->LineTo(rightMargin, yPos);
 
-	yPos += lineHeight;
+	yPos += borderHeight;
 
 	while (!rs.IsEOF())
 	{
 		CString id;
 		id.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(0, yPos, id);
+		pDC->TextOut(leftMargin, yPos, id);
 		pDC->TextOut(pageWidth / 4, yPos, rs.m_name);
 		CString manager = rs.m_manager ? _T("x") : _T("");
 		pDC->TextOut(2 * (pageWidth / 4), yPos, manager);
+
+		yPos += borderHeight;
+		/*pDC->MoveTo(leftMargin, yPos);*/
+		for (int i = leftMargin; i <= rightMargin; i += 100) {
+			pDC->MoveTo(i, yPos);
+			pDC->LineTo(i + 30, yPos);
+		}
 
 		yPos += lineHeight;
 		rs.MoveNext();
