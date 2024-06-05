@@ -69,33 +69,41 @@ void RecView::OnInitialUpdate()
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	int pageWidth = pDC->GetDeviceCaps(HORZRES);
-	int pageHeight = pDC->GetDeviceCaps(VERTRES);
-	CSize textSize = pDC->GetTextExtent(_T("Sample Text"));
-	int lineHeight = textSize.cy;
+	UINT const height = pDC->GetDeviceCaps(VERTRES);
+	UINT const width = pDC->GetDeviceCaps(HORZRES);
 	Set rs;
 	rs.Open();
-	int yPos = lineHeight;
+	CSize size = pDC->GetTextExtent(rs.m_name);
+	UINT lheight = size.cy;
+	UINT yPos = 20;
+	UINT xPosID = width / 50;
+	UINT xPosName = width / 20;
+	UINT xPosManager = width / 3;
 
-	pDC->TextOut(0, yPos, _T("ID"));
-	pDC->TextOut(pageWidth / 4, yPos, _T("Name"));
-	pDC->TextOut(2 * (pageWidth / 4), yPos, _T("Manager"));
+	pDC->TextOut(xPosID, yPos, _T("ID"));
+	pDC->MoveTo(xPosID *2, 0);
+	pDC->LineTo(xPosID *2, height);
 
-	yPos += lineHeight;
-	pDC->MoveTo(0, yPos);
-	pDC->LineTo(pageWidth, yPos);
-	yPos += lineHeight;
+	pDC->TextOut(xPosName, yPos, _T("Name"));
+	pDC->MoveTo(xPosName * 6, 0);
+	pDC->LineTo(xPosName * 6, height);
 
+	pDC->TextOut(xPosManager, yPos, _T("Manager"));
+
+	yPos += lheight;
+	
 	while (!rs.IsEOF())
 	{
+		pDC->MoveTo(0, yPos - 5);
+		pDC->LineTo(width, yPos - 5);
 		CString id;
 		id.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(0, yPos, id);
-		pDC->TextOut(pageWidth / 4, yPos, rs.m_name);
-		CString manager = rs.m_manager ? _T("X") : _T("");
-		pDC->TextOut(2 * (pageWidth / 4), yPos, manager);
-
-		yPos += lineHeight;
+		pDC->TextOut(xPosID, yPos, id);
+		pDC->TextOut(xPosName, yPos, rs.m_name);
+		CString isManager = rs.m_manager ? _T("X") : _T("");
+		pDC->TextOut(xPosManager, yPos, isManager);
+		
+		yPos += lheight;		
 		rs.MoveNext();
 	}
 }
