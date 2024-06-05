@@ -43,6 +43,9 @@ RecView::~RecView()
 void RecView::DoDataExchange(CDataExchange* pDX)
 {
 	CRecordView::DoDataExchange(pDX);
+	DDX_FieldText(pDX, IDC_EDIT1, m_pSet->m_id, m_pSet);
+	DDX_FieldText(pDX, IDC_EDIT2, m_pSet->m_name, m_pSet);
+	DDX_FieldCheck(pDX, IDC_CHECK1, m_pSet->m_manager, m_pSet);
 	//{{AFX_DATA_MAP(RecView)
 	//}}AFX_DATA_MAP
 }
@@ -76,6 +79,42 @@ void RecView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
+}
+
+void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
+{
+	const int page_width = pDC->GetDeviceCaps(HORZRES);
+	const int page_height = pDC->GetDeviceCaps(VERTRES);
+
+	int line_height = pDC->GetTextExtent(_T("Sample Text")).cy;
+
+	Set rs;
+	rs.Open();
+	int y_position = line_height;
+
+	pDC->TextOut(0, y_position, _T("ID"));
+	pDC->TextOut(page_width / 4, y_position, _T("Name"));
+	pDC->TextOut(2 * (page_width / 4), y_position, _T("Manager"));
+
+
+	y_position += line_height;
+	pDC->MoveTo(0, y_position);
+	pDC->LineTo(page_width, y_position);
+
+	y_position += line_height;
+
+	while (!rs.IsEOF())
+	{
+		CString id;
+		id.Format(_T("%d"), rs.m_id);
+		pDC->TextOut(0, y_position, id);
+		pDC->TextOut(page_width / 4, y_position, rs.m_name);
+		CString manager = rs.m_manager ? _T("X") : _T("");
+		pDC->TextOut(2 * (page_width / 4), y_position, manager);
+
+		y_position += line_height;
+		rs.MoveNext();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

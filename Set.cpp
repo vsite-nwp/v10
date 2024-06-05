@@ -35,7 +35,7 @@ CString Set::GetDefaultConnect()
 
 CString Set::GetDefaultSQL()
 {
-	return _T("[User]");
+	return _T("[table1]");
 }
 
 void Set::DoFieldExchange(CFieldExchange* pFX)
