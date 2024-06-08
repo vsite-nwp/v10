@@ -83,9 +83,8 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	int pageWidth = pDC->GetDeviceCaps(HORZRES);
-	int pageHeight = pDC->GetDeviceCaps(VERTRES);
-
+	CRect rc = pInfo->m_rectDraw;
+	int pageWidth = rc.right - rc.left;
 	CSize textSize = pDC->GetTextExtent(_T("Sample Text"));
 	int lineHeight = textSize.cy;
 	int borderHeight = textSize.cy + textSize.cy / 2;
@@ -94,8 +93,8 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	Set rs;
 	rs.Open();
 	int yPos = lineHeight;
-	int leftMargin = 200;
-	int rightMargin = pageWidth - leftMargin;
+	const int leftMargin = 200;
+	const int rightMargin = pageWidth - leftMargin;
 
 
 	pDC->TextOut(leftMargin, yPos, _T("id"));
@@ -109,22 +108,25 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 
 	yPos += borderHeight;
 
+	CPen pen(PS_DASH, 2, RGB(0, 0, 0));
+	CPen* pOldPen = pDC->SelectObject(&pen);
+
 	while (!rs.IsEOF())
 	{
 		CString id;
+		CString manager;
 		id.Format(_T("%d"), rs.m_id);
 		pDC->TextOut(leftMargin, yPos, id);
 		pDC->TextOut(pageWidth / 4, yPos, rs.m_name);
-		CString manager = rs.m_manager ? _T("x") : _T("");
+		if (rs.m_manager) {
+			manager = _T("x");
+		}
 		pDC->TextOut(2 * (pageWidth / 4), yPos, manager);
 
 		yPos += borderHeight;
-		/*pDC->MoveTo(leftMargin, yPos);*/
-		for (int i = leftMargin; i <= rightMargin; i += 100) {
-			pDC->MoveTo(i, yPos);
-			pDC->LineTo(i + 30, yPos);
-		}
-
+		pDC->MoveTo(leftMargin, yPos);
+		pDC->LineTo(rightMargin + 30, yPos);
+		
 		yPos += lineHeight;
 		rs.MoveNext();
 	}
