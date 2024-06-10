@@ -83,8 +83,7 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	CRect rc = pInfo->m_rectDraw;
-	int page_width = rc.right - rc.left;
+	int page_width = pInfo->m_rectDraw.Width();
 
 	int line_height = pDC->GetTextExtent(_T("Sample Text")).cy;
 
@@ -92,9 +91,9 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	rs.Open();
 	int y_position = line_height;
 
-	pDC->TextOut(30, y_position, _T("ID"));
-	pDC->TextOut(page_width / 4, y_position, _T("Name"));
-	pDC->TextOut(2 * (page_width / 4), y_position, _T("Manager"));
+	pDC->TextOut(page_width / 22, y_position, _T("ID"));
+	pDC->TextOut(page_width / 2.4, y_position, _T("Name"));
+	pDC->TextOut(page_width / 1.2, y_position, _T("Manager"));
 
 
 	y_position += line_height;
@@ -106,14 +105,13 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	while (!rs.IsEOF())
 	{
 		CString id;
-		CString manager;
 		id.Format(_T("%d"), rs.m_id);
-		pDC->TextOut(30, y_position, id);
-		pDC->TextOut(page_width / 4, y_position, rs.m_name);
+		pDC->TextOut(page_width / 22, y_position, id);
+		pDC->TextOut(page_width / 2.4, y_position, rs.m_name);
 		if (rs.m_manager) {
-			manager = "X";
+			CString manager("X");
+			pDC->TextOut(page_width / 1.2, y_position, manager);
 		}
-		pDC->TextOut(2 * (page_width / 4), y_position, manager);
 		y_position += line_height;
 		rs.MoveNext();
 	}
