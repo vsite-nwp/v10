@@ -83,24 +83,20 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	CRect rc = pInfo->m_rectDraw;
-	int pageWidth = rc.right - rc.left;
-	CSize textSize = pDC->GetTextExtent(_T("Sample Text"));
-	int lineHeight = textSize.cy;
-	int borderHeight = textSize.cy + textSize.cy / 2;
-
+	int const pageWidth = pInfo->m_rectDraw.Width();
+	int const lineHeight = pDC->GetTextExtent(_T("Petar")).cy;
+	float const borderHeight = lineHeight + lineHeight / 1.5;
 
 	Set rs;
 	rs.Open();
-	int yPos = lineHeight;
-	const int leftMargin = 200;
-	const int rightMargin = pageWidth - leftMargin;
+	const float topMargin = pInfo->m_rectDraw.Height() - (pInfo->m_rectDraw.Height() * 0.850);
+	const float leftMargin = pageWidth - (pageWidth * 0.85);
+	const float rightMargin = pageWidth - leftMargin;
+	float yPos = topMargin;
 
-
-	pDC->TextOut(leftMargin, yPos, _T("id"));
-	pDC->TextOut(pageWidth / 4, yPos, _T("name"));
-	pDC->TextOut(2 * (pageWidth / 4), yPos, _T("manager"));
-
+	pDC->TextOut(leftMargin, yPos, _T("ID"));
+	pDC->TextOut(pageWidth / 4, yPos, _T("Name"));
+	pDC->TextOut((pageWidth / 2), yPos, _T("Manager"));
 
 	yPos += borderHeight;
 	pDC->MoveTo(leftMargin, yPos);
@@ -111,7 +107,7 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 	CPen pen(PS_DASH, 2, RGB(0, 0, 0));
 	CPen* pOldPen = pDC->SelectObject(&pen);
 
-	while (!rs.IsEOF())
+	while(!rs.IsEOF())
 	{
 		CString id;
 		CString manager;
@@ -120,15 +116,29 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		pDC->TextOut(pageWidth / 4, yPos, rs.m_name);
 		if (rs.m_manager) {
 			manager = _T("x");
+			pDC->TextOut((pageWidth / 2), yPos, manager);
 		}
-		pDC->TextOut(2 * (pageWidth / 4), yPos, manager);
-
-		yPos += borderHeight;
-		pDC->MoveTo(leftMargin, yPos);
-		pDC->LineTo(rightMargin + 30, yPos);
 		
-		yPos += lineHeight;
 		rs.MoveNext();
+		if(!rs.IsEOF()) 
+		{
+			pDC->SelectObject(pen);
+			yPos += borderHeight;
+			pDC->MoveTo(leftMargin, yPos);
+			pDC->LineTo(rightMargin, yPos);
+		
+			yPos += lineHeight;
+		}
+		else 
+		{
+			pDC->SelectObject(pOldPen);
+			yPos += borderHeight;
+			pDC->MoveTo(leftMargin, yPos);
+			pDC->LineTo(rightMargin, yPos);
+			yPos += lineHeight * 0.8;
+			pDC->MoveTo(leftMargin, yPos);
+			pDC->LineTo(rightMargin, yPos);
+		}
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
