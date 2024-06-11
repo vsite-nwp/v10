@@ -83,14 +83,14 @@ void RecView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 
 void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 {
-	int const pageWidth = pInfo->m_rectDraw.Width();
-	int const lineHeight = pDC->GetTextExtent(_T("Petar")).cy;
-	float const borderHeight = lineHeight + lineHeight / 1.5;
+	const int pageWidth = pInfo->m_rectDraw.Width();
+	const int lineHeight = pDC->GetTextExtent(_T("Petar")).cy;
+	const float borderHeight = lineHeight + lineHeight / 1.5;
 
 	Set rs;
 	rs.Open();
 	const float topMargin = pInfo->m_rectDraw.Height() - (pInfo->m_rectDraw.Height() * 0.850);
-	const float leftMargin = pageWidth - (pageWidth * 0.85);
+	const float leftMargin = pageWidth * 0.15;
 	const float rightMargin = pageWidth - leftMargin;
 	float yPos = topMargin;
 
@@ -122,7 +122,6 @@ void RecView::OnPrint(CDC* pDC, CPrintInfo* pInfo)
 		rs.MoveNext();
 		if(!rs.IsEOF()) 
 		{
-			pDC->SelectObject(pen);
 			yPos += borderHeight;
 			pDC->MoveTo(leftMargin, yPos);
 			pDC->LineTo(rightMargin, yPos);
